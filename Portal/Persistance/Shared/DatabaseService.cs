@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Portal.Domain.Users;
-using Portal.Persistance.Users;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Portal.Domain.Members;
 
 namespace Portal.Persistance.Shared
 {
-    public class DatabaseService : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public class DatabaseService : DbContext
     {
         public DbSet<Member> Members { get; set; }
 
@@ -18,7 +15,7 @@ namespace Portal.Persistance.Shared
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //builder.ForSqlServerUseSequenceHiLo();
-            UserHelper.Map(builder);
+            builder.Entity<Member>().ForSqlServerToTable(name: "Members", schema: "team");
             base.OnModelCreating(builder);
         }
     }

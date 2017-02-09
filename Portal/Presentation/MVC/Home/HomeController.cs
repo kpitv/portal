@@ -1,8 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portal.Application;
 
 namespace Presentation.Home
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()

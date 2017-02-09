@@ -1,28 +1,40 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portal.Application.Users;
+using Portal.Presentation.Identity.Services;
 using System.Threading.Tasks;
 
 namespace Presentation.MVC.Users
 {
+    [Authorize]
     public class UsersController : Controller
     {
-        readonly IUsersQueryService query;
-        public UsersController(IUsersQueryService query)
+        readonly IIdentityManager manager;
+        public UsersController(IIdentityManager manager)
         {
-            this.query = query;
+            this.manager = manager;
         }
 
         [HttpGet]
-        public IActionResult LogIn()
+        [AllowAnonymous]
+        public IActionResult LogInAsync(string returnUrl)
         {
-            return View();
+            return View("LogIn");
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogInAsync(string userName, string password, string isPersistent)
         {
-            await query.SignInAsync(userName, password, true ? isPersistent == "on" : false);
+            await manager.SignIn.PasswordSignInAsync(userName, password, isPersistent == "on", false);
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult LogOut()
+        {
+            manager.SignIn.SignOutAsync();
+            return RedirectToAction(nameof(LogInAsync));
         }
     }
 }

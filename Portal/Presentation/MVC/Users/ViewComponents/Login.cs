@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Portal.Domain.Users;
+﻿using Microsoft.AspNetCore.Mvc;
+using Portal.Presentation.Identity.Services;
 
 namespace Portal.Presentation.MVC.Shared.Components
 {
-    public class Login : ViewComponent
+    public class LogIn : ViewComponent
     {
-        SignInManager<User> signInManager;
-        public Login(SignInManager<User> signInManager)
+        readonly IIdentityManager manager;
+        public LogIn(IIdentityManager manager)
         {
-            this.signInManager = signInManager;
+            this.manager = manager;
         }
         public IViewComponentResult Invoke() =>
-            View(signInManager.IsSignedIn(HttpContext.User));
+            View(manager.SignIn.IsSignedIn(HttpContext.User));
     }
 }

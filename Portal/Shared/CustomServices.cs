@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Portal.Application.Shared;
-using Portal.Application.Users;
-using Portal.Domain.Users;
 using Portal.Persistance.Shared;
-using Portal.Persistance.Users;
-using System;
+using Portal.Presentation.Identity.Data;
+using Portal.Presentation.Identity.Services;
 
 namespace Portal.Shared
 {
@@ -18,20 +17,28 @@ namespace Portal.Shared
             services.AddDbContext<DatabaseService>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
 
-            services.AddIdentity<User, IdentityRole<Guid>>(o =>
+            #region Identity configuration
+            services.AddDbContext<IdentityDatabaseService>(options =>
+                    options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityDatabaseService>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(o =>
             {
+                // Redirect settings
+                o.Cookies.ApplicationCookie.LoginPath = new PathString("/Users/LogInAsync");
+
+                // Password settings
                 o.Password.RequireDigit = false;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 7;
-            })
-                .AddEntityFrameworkStores<DatabaseService, Guid>()
-                .AddDefaultTokenProviders();
-
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUsersQueryService, UsersQueryService>();
-            services.AddScoped<UserInitializer>();
+            });
+            services.AddScoped<IIdentityManager, IdentityManager>();
+            #endregion
         }
     }
 }

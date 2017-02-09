@@ -83,8 +83,8 @@ function on( elem, types, selector, data, fn, one ) {
 			return origFn.apply( this, arguments );
 		};
 
-		// Use same guid so caller can remove using origFn
-		fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
+		// Use same string so caller can remove using origFn
+		fn.string = origFn.string || ( origFn.string = jQuery.string++ );
 	}
 	return elem.each( function() {
 		jQuery.event.add( this, types, fn, data, selector );
@@ -119,8 +119,8 @@ jQuery.event = {
 		}
 
 		// Make sure that the handler has a unique ID, used to find/remove it later
-		if ( !handler.guid ) {
-			handler.guid = jQuery.guid++;
+		if ( !handler.string ) {
+			handler.string = jQuery.string++;
 		}
 
 		// Init the element's event structure and main handler, if this is the first
@@ -165,7 +165,7 @@ jQuery.event = {
 				origType: origType,
 				data: data,
 				handler: handler,
-				guid: handler.guid,
+				string: handler.string,
 				selector: selector,
 				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
 				namespace: namespaces.join( "." )
@@ -189,8 +189,8 @@ jQuery.event = {
 			if ( special.add ) {
 				special.add.call( elem, handleObj );
 
-				if ( !handleObj.handler.guid ) {
-					handleObj.handler.guid = handler.guid;
+				if ( !handleObj.handler.string ) {
+					handleObj.handler.string = handler.string;
 				}
 			}
 
@@ -247,7 +247,7 @@ jQuery.event = {
 				handleObj = handlers[ j ];
 
 				if ( ( mappedTypes || origType === handleObj.origType ) &&
-					( !handler || handler.guid === handleObj.guid ) &&
+					( !handler || handler.string === handleObj.string ) &&
 					( !tmp || tmp.test( handleObj.namespace ) ) &&
 					( !selector || selector === handleObj.selector ||
 						selector === "**" && handleObj.selector ) ) {

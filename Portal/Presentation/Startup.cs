@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Portal.Persistance.Users;
+using Portal.Presentation.Identity.Services;
 using Portal.Presentation.Infrastructure;
 using Portal.Shared;
 
@@ -34,15 +34,14 @@ namespace Presentation
                 options.ViewLocationExpanders.Add(new ViewLocationChanger());
             });
         }
-            
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserInitializer userInitializer)
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IIdentityManager identityManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
-                
             }
 
             app.UseStaticFiles();
@@ -56,7 +55,7 @@ namespace Presentation
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            userInitializer.Initialize();
+            identityManager.InitializeUsers();
         }
     }
 }
