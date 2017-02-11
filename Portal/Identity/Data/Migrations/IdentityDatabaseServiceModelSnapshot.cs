@@ -8,7 +8,7 @@ using Portal.Presentation.Identity.Data;
 namespace Portal.Presentation.Identity.Data.Migrations
 {
     [DbContext(typeof(IdentityDatabaseService))]
-    partial class IdentityDatabaseServiceModelSnapshot : ModelSnapshot
+    internal partial class IdentityDatabaseServiceModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

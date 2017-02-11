@@ -8,7 +8,7 @@ using Portal.Persistance.Shared;
 namespace Portal.Persistance.Migrations
 {
     [DbContext(typeof(DatabaseService))]
-    partial class DatabaseServiceModelSnapshot : ModelSnapshot
+    internal partial class DatabaseServiceModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

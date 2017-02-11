@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Portal.Presentation.Identity.Services;
 
-namespace Portal.Presentation.MVC.Shared.Components
+namespace Portal.Presentation.MVC.Users.ViewComponents
 {
     public class LogIn : ViewComponent
     {
-        readonly IIdentityManager manager;
+        private readonly IIdentityManager manager;
         public LogIn(IIdentityManager manager)
         {
             this.manager = manager;

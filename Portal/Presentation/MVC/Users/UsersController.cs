@@ -8,7 +8,7 @@ namespace Presentation.MVC.Users
     [Authorize]
     public class UsersController : Controller
     {
-        readonly IIdentityManager manager;
+        private readonly IIdentityManager manager;
         public UsersController(IIdentityManager manager)
         {
             this.manager = manager;

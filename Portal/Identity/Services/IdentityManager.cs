@@ -8,7 +8,7 @@ namespace Portal.Presentation.Identity.Services
 {
     public class IdentityManager : IIdentityManager
     {
-        readonly IdentityDatabaseService service;
+        private readonly IdentityDatabaseService service;
         public UserManager<IdentityUser> User { get; private set; }
         public SignInManager<IdentityUser> SignIn { get; private set; }
         public RoleManager<IdentityRole> Role { get; private set; }
