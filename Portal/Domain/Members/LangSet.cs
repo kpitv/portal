@@ -14,12 +14,24 @@ namespace Portal.Domain.Members
 
         public LangSet(string inEnglish, string inRussian, string inUkrainian)
         {
-            InEnglish = inEnglish;
-            InRussian = inRussian;
-            InUkrainian = inUkrainian;
+            if (CanBeEnglish(inEnglish))
+                InEnglish = inEnglish;
+            else throw new ArgumentException("Text is not English");
+
+            if (CanBeRussian(inRussian))
+                InRussian = inRussian;
+            else throw new ArgumentException("Text is not Russian");
+
+            if (CanBeUkrainian(inUkrainian))
+                InUkrainian = inUkrainian;
+            else throw new ArgumentException("Text is not Ukrainian");
         }
 
         #region Methods
+        public LangSet Update(string inEnglish = null, 
+            string inRussian = null, string inUkrainian = null) => 
+            new LangSet(inEnglish ?? InEnglish, inRussian ?? InRussian, inUkrainian ?? InUkrainian);
+
         public static bool CanBeEnglish(string text) =>
             !text.ToUpper().Any(c => "АБВГҐДЕЄЁЖЗИІЇКЛМНОПРСТУФХЦЧШЩЇЪЫЬЭЮЯ".Contains(c));
 

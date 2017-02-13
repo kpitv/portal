@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Portal.Domain.Members;
 using Xunit;
 
@@ -6,6 +7,28 @@ namespace Portal.Tests.UnitTests.Domain.Members
 {
     public class LangSetTests
     {
+        [Theory]
+        [InlineData("Волянскёй", "Волянский", "Волянській")]
+        [InlineData("Volyansky", "Vолянский", "Волянській")]
+        [InlineData("Volyansky", "Волянский", "Vолянській")]
+        public void Ctor_IfNotCorrespondToLangShouldThrowException(string eng, string rus, string ukr)
+        {
+            Action action = () => new LangSet(eng, rus, ukr);
+
+            action.ShouldThrow<ArgumentException>();
+        }
+
+        [Fact]
+        public void Update_ShouldReturnEqualTo()
+        {
+            var obj = new LangSet("Hello", "Привет", "Привіт");
+            var objUpdated = new LangSet("Volyansky", "Волянский", "Привіт");
+
+            obj = obj.Update(inEnglish: "Volyansky", inRussian: "Волянский");
+
+            obj.Should().Be(objUpdated);
+        }
+
         [Theory]
         [InlineData("Волянскёй")]
         [InlineData("Vолянский")]
@@ -90,8 +113,8 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [Fact]
         public void GetHashCode_ShouldNotBeEqual()
         {
-            var obj1 = new LangSet("Hello!", "Привет!", "Вітаю!");
-            var obj2 = new LangSet("Привет!", "Hello!", "Вітаю!");
+            var obj1 = new LangSet("Hello!", "Привет!", "Привет");
+            var obj2 = new LangSet("Hello!", "Привет", "Привет!");
 
             obj1.GetHashCode().Should().NotBe(obj2.GetHashCode());
         }
