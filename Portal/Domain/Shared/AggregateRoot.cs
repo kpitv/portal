@@ -1,6 +1,6 @@
 ﻿namespace Portal.Domain.Shared
 {
-    public interface IAggregateRoot : IEntity
+    public abstract class AggregateRoot : Entity
     {
 
     }
