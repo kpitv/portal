@@ -7,9 +7,9 @@ namespace Portal.Domain.Members
     public class LangSet : ValueObject<LangSet>
     {
         #region Properties
-        public string InEnglish { get; private set; }
-        public string InRussian { get; private set; }
-        public string InUkrainian { get; private set; }
+        public string InEnglish { get; }
+        public string InRussian { get; }
+        public string InUkrainian { get; }
         #endregion
 
         public LangSet(string inEnglish, string inRussian, string inUkrainian)
@@ -28,8 +28,8 @@ namespace Portal.Domain.Members
         }
 
         #region Methods
-        public LangSet Update(string inEnglish = null, 
-            string inRussian = null, string inUkrainian = null) => 
+        public LangSet Update(string inEnglish = null,
+            string inRussian = null, string inUkrainian = null) =>
             new LangSet(inEnglish ?? InEnglish, inRussian ?? InRussian, inUkrainian ?? InUkrainian);
 
         public static bool CanBeEnglish(string text) =>
