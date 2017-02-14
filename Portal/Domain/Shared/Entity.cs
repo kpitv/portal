@@ -10,19 +10,9 @@ namespace Portal.Domain.Shared
         {
             var other = obj as Entity;
 
-            if (ReferenceEquals(other, null))
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            if (GetType() != other.GetType())
-                return false;
-
-            if (Id == Guid.Empty || other.Id == Guid.Empty)
-                return false;
-
-            return Id == other.Id;
+            return !ReferenceEquals(other, null) &&
+                (ReferenceEquals(this, other) || GetType() == other.GetType() &&
+                (Id != Guid.Empty && other.Id != Guid.Empty && Id == other.Id));
         }
 
         public override int GetHashCode() =>

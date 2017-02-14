@@ -1,13 +1,9 @@
-﻿using System;
-using Portal.Domain.Shared;
+﻿using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
 {
-    public class Member : IAggregateRoot
+    public class Member : AggregateRoot
     {
-        public Guid Id { get; private set; }
-        public MemberName MemberNameEng { get; private set; }
-        public MemberName MemberNameRus { get; private set; }
-        public MemberName MemberNameUkr { get; private set; }
+        public MemberName Name { get; set; }   
     }
 }
