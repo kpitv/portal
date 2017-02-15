@@ -4,7 +4,7 @@ namespace Portal.Domain.Shared
 {
     public abstract class Entity
     {
-        public virtual Guid Id { get; }
+        public virtual Guid Id { get; } = Guid.NewGuid();
 
         public override bool Equals(object obj)
         {

@@ -43,9 +43,9 @@ namespace Portal.Domain.Members
 
         #region Methods
         public static bool Validate(LangSet name) =>
-           Regex.IsMatch(name.InEnglish, @"^[a-zA-Z\-]*$") &&
-           Regex.IsMatch(name.InRussian, @"^[а-яА-яЁё\-]*$") &&
-           Regex.IsMatch(name.InUkrainian, @"^[А-Ща-щЬЮЯьюяҐІЇЄґіїє\-]*$");
+           Regex.IsMatch(name.InEnglish, @"^[a-zA-Z\-']*$") &&
+           Regex.IsMatch(name.InRussian, @"^[а-яА-яЁё\-']*$") &&
+           Regex.IsMatch(name.InUkrainian, @"^[А-Ща-щЬЮЯьюяҐІЇЄґіїє\-']*$");
 
         public MemberName Update(LangSet firstName = null,
             LangSet secondName = null, LangSet lastName = null) =>
