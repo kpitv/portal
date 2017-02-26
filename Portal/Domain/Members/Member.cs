@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Portal.Domain.Shared;
@@ -19,8 +18,9 @@ namespace Portal.Domain.Members
         public string About { get; private set; }
         #endregion
 
+        #region Ctors
         public Member(string userId, MemberName name, string email, List<Phone> phones,
-            List<Role> roles, string about = null, Dictionary<ContactLink, string> contactLinks = null)
+       List<Role> roles, string about = null, Dictionary<ContactLink, string> contactLinks = null)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentNullException(nameof(userId));
@@ -33,7 +33,7 @@ namespace Portal.Domain.Members
             if (ValidateEmail(email))
                 Email = email;
             else throw new ArgumentException(nameof(email));
-            if (VaildateAbout(about))
+            if (ValidateAbout(about))
                 About = about;
             else throw new ArgumentException(nameof(about));
 
@@ -43,7 +43,8 @@ namespace Portal.Domain.Members
             About = about;
             Roles = roles;
             ContactLinks = contactLinks;
-        }
+        } 
+        #endregion
 
         #region Methods
         public void Update(MemberName name = null, string email = null, List<Phone> phones = null,
@@ -64,7 +65,7 @@ namespace Portal.Domain.Members
 
             if (about?.Length == 0)
                 About = null;
-            else if (VaildateAbout(about))
+            else if (ValidateAbout(about))
                 About = about;
             else throw new ArgumentException(nameof(about));
 
@@ -75,7 +76,7 @@ namespace Portal.Domain.Members
         }
         public static bool ValidateEmail(string email) =>
              Regex.IsMatch(email, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
-        public static bool VaildateAbout(string about, int maxLength = 500) =>
+        public static bool ValidateAbout(string about, int maxLength = 500) =>
              about.Length > 0 && about.Length <= maxLength;
         #endregion
     }

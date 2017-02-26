@@ -4,11 +4,14 @@
     {
         Leader,
         Coordinator,
+        Cameraman,
+        FilmEditor,
+        Reporter,
+        Host,
         Designer,
+        Soundman,
         Copyrighter,
-        Photographer,
-        Reporter
-
-        // звукач, оператор, режиссер монтажа, сценарист, ведущий
+        Scriptwriter,
+        Photographer
     }
 }

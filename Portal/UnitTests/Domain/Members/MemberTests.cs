@@ -14,17 +14,13 @@ namespace Portal.Tests.UnitTests.Domain.Members
               new LangSet("Coobley", "Кублий", "Кублій")
               );
 
-        public IEnumerable<object[]> InvalidCtorData()
+        [Fact]
+        public void Ctor_IfPhonesIsNullShouldThrowException()
         {
-            yield return new object[] { new Member(Guid.NewGuid(), memberName, "fuzz@bizz.com", null, new List<Role>() { Role.Coordinator, Role.Photographer }), };
-            yield return new object[] { new LangSet("Hello", "/Привет", "Привіт") };
-        }
+            Action action = () => new Member("1", memberName, "fuzz@bizz.com", phones: null,
+                roles: new List<Role>() { Role.Coordinator, Role.Photographer });
 
-        [Theory]
-        [MemberData(nameof(InvalidCtorData))]
-        public void Ctor_ShouldThrowException()
-        {
-
+            action.ShouldThrow<ArgumentNullException>();
         }
 
         [Theory]
@@ -47,6 +43,32 @@ namespace Portal.Tests.UnitTests.Domain.Members
         public void ValidateEmail_ShouldReturnTrue(string email)
         {
             bool result = Member.ValidateEmail(email);
+
+            result.Should().BeTrue();
+        }
+
+
+        [Theory]
+        [InlineData("")]
+        public void ValidateAbout_ShouldReturnFalse(string about)
+        {
+            bool result = Member.ValidateAbout(about);
+
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ValidateAbout_IfStringLengthIsGreaterThan500ShouldReturnFalse()
+        {
+            bool result = Member.ValidateAbout(new string('c', 501));
+
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ValidateAbout_ShouldReturnTrue()
+        {
+            bool result = Member.ValidateAbout("Stasik");
 
             result.Should().BeTrue();
         }

@@ -2,7 +2,7 @@
 {
     public enum ContactLink
     {
-        VK,
+        Vk,
         Facebook,
         Instagram,
         Twitter,
