@@ -20,7 +20,7 @@ namespace Portal.Domain.Members
 
         #region Ctors
         public Member(string userId, MemberName name, string email, List<Phone> phones,
-       List<Role> roles, string about = null, Dictionary<ContactLink, string> contactLinks = null)
+            List<Role> roles, string about = null, Dictionary<ContactLink, string> contactLinks = null)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentNullException(nameof(userId));

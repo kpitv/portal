@@ -1,9 +1,44 @@
 ﻿using Portal.Domain.Shared;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Portal.Domain.Assets
 {
-    public class Asset : AggregateRoot
+    public class Asset : Entity
     {
-        public Type Type { get; set; }
+        #region Properties
+        public IReadOnlyList<string> Values { get; set; } 
+        #endregion
+
+        #region Ctors
+        public Asset(List<string> values)
+        {
+            Values = values;
+        } 
+        #endregion
+
+        #region EventHandlers
+        public void OnPropertyMoved(object sender, AssetTypeEventArgs e)
+        {
+            List<string> newValues = Values.ToList();
+            newValues.Insert(e.NewIndex, newValues[e.PropertyIndex]);
+            newValues.RemoveAt(e.PropertyIndex + 1);
+            Values = newValues;
+        }
+
+        public void OnPropertyAdded(object sender, AssetTypeEventArgs e)
+        {
+            List<string> newValues = Values.ToList();
+            newValues.Insert(e.PropertyIndex, "");
+            Values = newValues;
+        }
+
+        public void OnPropertyRemoved(object sender, AssetTypeEventArgs e)
+        {
+            List<string> newValues = Values.ToList();
+            newValues.RemoveAt(e.PropertyIndex);
+            Values = newValues;
+        } 
+        #endregion
     }
 }
