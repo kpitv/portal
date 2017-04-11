@@ -16,25 +16,25 @@ namespace Presentation.MVC.Users
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult LogInAsync(string returnUrl)
+        public IActionResult Login(string returnUrl)
         {
-            return View("LogIn");
+            return View("Login");
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogInAsync(string userName, string password, string isPersistent)
+        public async Task<IActionResult> Login(string userName, string password, string isPersistent)
         {
             await manager.SignIn.PasswordSignInAsync(userName, password, isPersistent == "on", false);
             return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
-        public IActionResult LogOut()
+        public IActionResult Logout()
         {
             manager.SignIn.SignOutAsync();
-            return RedirectToAction(nameof(LogInAsync));
+            return RedirectToAction(nameof(Login));
         }
     }
 }

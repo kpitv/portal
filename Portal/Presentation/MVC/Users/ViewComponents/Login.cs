@@ -3,10 +3,10 @@ using Portal.Presentation.Identity.Services;
 
 namespace Portal.Presentation.MVC.Users.ViewComponents
 {
-    public class LogIn : ViewComponent
+    public class Login : ViewComponent
     {
         private readonly IIdentityManager manager;
-        public LogIn(IIdentityManager manager)
+        public Login(IIdentityManager manager)
         {
             this.manager = manager;
         }

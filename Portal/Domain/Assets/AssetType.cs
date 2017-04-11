@@ -75,7 +75,7 @@ namespace Portal.Domain.Assets
             if (Properties.Contains(newName))
                 throw new ArgumentException("The property with new name already exists");
 
-            List<string> newProperties = Properties.ToList();
+            var newProperties = Properties.ToList();
             newProperties[Properties.ToList().IndexOf(name)] = newName;
             Properties = newProperties;
         }
@@ -87,7 +87,7 @@ namespace Portal.Domain.Assets
             if (newIndex < 0 || newIndex >= Properties.Count)
                 throw new IndexOutOfRangeException();
 
-            List<string> newProperties = Properties.ToList();
+            var newProperties = Properties.ToList();
 
             int propertyIndex = newProperties.IndexOf(name);
 
@@ -117,7 +117,7 @@ namespace Portal.Domain.Assets
             if (index < 0 || index > Properties.Count)
                 throw new IndexOutOfRangeException();
 
-            List<string> newProperties = Properties.ToList();
+            var newProperties = Properties.ToList();
             newProperties.Insert(index, name);
             Properties = newProperties;
 
@@ -132,7 +132,7 @@ namespace Portal.Domain.Assets
             if (!Properties.Contains(name))
                 throw new ArgumentException("Specified property does not exist");
 
-            List<string> newProperties = Properties.ToList();
+            var newProperties = Properties.ToList();
             int propertyIndex = newProperties.IndexOf(name);
             newProperties.RemoveAt(propertyIndex);
             Properties = newProperties;

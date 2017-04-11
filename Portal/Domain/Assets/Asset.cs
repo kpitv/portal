@@ -7,11 +7,11 @@ namespace Portal.Domain.Assets
     public class Asset : Entity
     {
         #region Properties
-        public IReadOnlyList<string> Values { get; set; } 
+        public IReadOnlyList<string> Values { get; private set; } 
         #endregion
 
         #region Ctors
-        public Asset(List<string> values)
+        public Asset(IReadOnlyList<string> values)
         {
             Values = values;
         } 
@@ -28,14 +28,14 @@ namespace Portal.Domain.Assets
 
         public void OnPropertyAdded(object sender, AssetTypeEventArgs e)
         {
-            List<string> newValues = Values.ToList();
+            var newValues = Values.ToList();
             newValues.Insert(e.PropertyIndex, "");
             Values = newValues;
         }
 
         public void OnPropertyRemoved(object sender, AssetTypeEventArgs e)
         {
-            List<string> newValues = Values.ToList();
+            var newValues = Values.ToList();
             newValues.RemoveAt(e.PropertyIndex);
             Values = newValues;
         } 

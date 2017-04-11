@@ -2,6 +2,7 @@
 {
     public enum Role
     {
+        None,
         Leader,
         Coordinator,
         Cameraman,

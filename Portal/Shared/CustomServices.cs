@@ -28,7 +28,7 @@ namespace Portal.Shared
             services.Configure<IdentityOptions>(o =>
             {
                 // Redirect settings
-                o.Cookies.ApplicationCookie.LoginPath = new PathString("/Users/LogInAsync");
+                o.Cookies.ApplicationCookie.LoginPath = new PathString("/Users/Login");
 
                 // Password settings
                 o.Password.RequireDigit = false;
