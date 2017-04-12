@@ -1,18 +1,21 @@
-﻿using Portal.Domain.Shared;
+﻿using System;
+using Portal.Domain.Shared;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Portal.Domain.Assets
 {
-    public class Asset : Entity
+    public sealed class Asset : Entity
     {
         #region Properties
         public IReadOnlyList<string> Values { get; private set; } 
         #endregion
 
         #region Ctors
-        public Asset(IReadOnlyList<string> values)
+        public Asset(IReadOnlyList<string> values, Guid? id = null)
         {
+            if (id != null)
+                Id = (Guid)id;
             Values = values;
         } 
         #endregion

@@ -1,14 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Portal.Persistance.Assets.Entities;
 using Portal.Persistance.Members.Entities;
 
 namespace Portal.Persistance.Shared
 {
     public class DatabaseService : DbContext
     {
+        #region Members
         public DbSet<MemberEntity> Members { get; set; }
         public DbSet<ContactLinkEntity> ContactLinks { get; set; }
         public DbSet<PhoneEntity> Phones { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
+        #endregion
+
+        #region Assets
+        public DbSet<AssetTypeEntity> AssetTypes { get; set; }
+        public DbSet<AssetEntity> Assets { get; set; }
+        public DbSet<AssetTypePropertyEntity> AssetTypeProperties { get; set; }
+        public DbSet<AssetPropertyValueEntity> AssetPropertyValues { get; set; } 
+        #endregion
 
         public DatabaseService(DbContextOptions<DatabaseService> options)
             : base(options)
@@ -17,6 +27,7 @@ namespace Portal.Persistance.Shared
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region Members
             builder.Entity<MemberEntity>().ForSqlServerToTable(name: "Members", schema: "team");
 
             builder.Entity<ContactLinkEntity>()
@@ -30,6 +41,22 @@ namespace Portal.Persistance.Shared
 
             builder.Entity<RoleEntity>()
                .HasKey(r => new { r.Name, r.MemberId });
+            builder.Entity<RoleEntity>().ForSqlServerToTable(name: "Roles", schema: "team");
+            #endregion
+
+            #region Assets
+            builder.Entity<AssetTypeEntity>().ForSqlServerToTable(name: "AssetTypes", schema: "team");
+
+            builder.Entity<AssetEntity>().ForSqlServerToTable(name: "Assets", schema: "team");
+
+            builder.Entity<AssetTypePropertyEntity>()
+                .HasKey(p => new { p.Name, p.AssetTypeEntityId });
+            builder.Entity<AssetTypePropertyEntity>().ForSqlServerToTable(name: "AssetTypeProperties", schema: "team");
+
+            builder.Entity<AssetPropertyValueEntity>()
+                .HasKey(p => new { p.AssetEntityId, p.Property });
+            builder.Entity<AssetPropertyValueEntity>().ForSqlServerToTable(name: "AssetPropertyValues", schema: "team"); 
+            #endregion
 
             base.OnModelCreating(builder);
         }

@@ -17,9 +17,26 @@ namespace Portal.Persistance.Members
             this.databaseService = databaseService;
         }
 
+        #region Queries
+        public IEnumerable<Member> Find(Predicate<Member> predicate) =>
+            databaseService.Members.ToMappedCollection(EntityMapper.ToMember).Where(m => predicate(m));
+
+        public Member Get(Guid id) =>
+            databaseService.Members.Single(a => a.Id == id.ToString()).ToMember();
+
+        public IEnumerable<Member> GetAll() =>
+            databaseService.Members.ToMappedCollection(EntityMapper.ToMember);
+        #endregion
+
+        #region Commands
         public void Create(Member aggregateRoot)
         {
             databaseService.Members.Add(aggregateRoot.ToMemberEntity());
+        }
+
+        public void Update(Member aggregateRoot)
+        {
+            databaseService.Members.Update(aggregateRoot.ToMemberEntity());
         }
 
         public void Delete(Guid id)
@@ -27,25 +44,10 @@ namespace Portal.Persistance.Members
             databaseService.Members.Remove(databaseService.Members.Single(a => a.Id == id.ToString()));
         }
 
-        public IEnumerable<Member> Find(Predicate<Member> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Member Get(Guid id) =>
-            databaseService.Members.Single(a => a.Id == id.ToString()).ToMember();
-
-        public IEnumerable<Member> GetAll() =>
-            databaseService.Members.ToMappedCollection(EntityMapper.ToMember);
-
         public void Save()
         {
             databaseService.SaveChanges();
-        }
-
-        public void Update(Member aggregateRoot)
-        {
-            databaseService.Members.Update(aggregateRoot.ToMemberEntity());
-        }
+        } 
+        #endregion
     }
 }

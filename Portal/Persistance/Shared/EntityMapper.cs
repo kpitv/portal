@@ -3,26 +3,29 @@ using Portal.Persistance.Members.Entities;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Portal.Domain.Assets;
 using Portal.Domain.Members;
+using Portal.Persistance.Assets.Entities;
 
 namespace Portal.Persistance.Shared
 {
     public static class EntityMapper
     {
-        public static Member ToMember(this MemberEntity member) =>
+        #region Member
+        public static Member ToMember(this MemberEntity memberEntity) =>
            new Member(
-                id: Guid.Parse(member.Id),
-                userId: member.UserId,
+                id: Guid.Parse(memberEntity.Id),
+                userId: memberEntity.UserId,
                 name: new MemberName(
-                    firstName: new LangSet(member.FirstNameInEnglish, member.FirstNameInRussian, member.FirstNameInUkrainian),
-                    secondName: new LangSet(member.SecondNameInEnglish, member.SecondNameInRussian, member.SecondNameInUkrainian),
-                    lastName: new LangSet(member.LastNameInEnglish, member.LastNameInRussian, member.LastNameInUkrainian)),
-                email: member.Email,
-                phones: member.Phones.ToMappedCollection(ToPhone).ToList(),
-                roles: member.Roles.ToMappedCollection(ToRole).ToList(),
-                contactLinks: member.ContactLinks.ToMappedCollection(ToContactLink)
-                    .Zip(member.ContactLinks.Select(c => c.Link), (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v),
-                about: member.About
+                    firstName: new LangSet(memberEntity.FirstNameInEnglish, memberEntity.FirstNameInRussian, memberEntity.FirstNameInUkrainian),
+                    secondName: new LangSet(memberEntity.SecondNameInEnglish, memberEntity.SecondNameInRussian, memberEntity.SecondNameInUkrainian),
+                    lastName: new LangSet(memberEntity.LastNameInEnglish, memberEntity.LastNameInRussian, memberEntity.LastNameInUkrainian)),
+                email: memberEntity.Email,
+                phones: memberEntity.Phones.ToMappedCollection(ToPhone).ToList(),
+                roles: memberEntity.Roles.ToMappedCollection(ToRole).ToList(),
+                contactLinks: memberEntity.ContactLinks.ToMappedCollection(ToContactLink)
+                    .Zip(memberEntity.ContactLinks.Select(c => c.Link), (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v),
+                about: memberEntity.About
                 );
 
         public static Phone ToPhone(this PhoneEntity phoneEntity) =>
@@ -70,5 +73,51 @@ namespace Portal.Persistance.Shared
                 MemberId = memberId
             })
             .ToList();
+        #endregion
+
+        public static AssetType ToAssetType(this AssetTypeEntity assetTypeEntity) =>
+            new AssetType(
+                id: Guid.Parse(assetTypeEntity.Id),
+                name: assetTypeEntity.Name,
+                properties: assetTypeEntity.Properties.Select(p => p.Name).ToList()
+                );
+
+        public static Asset ToAsset(this AssetEntity assetEntity) =>
+            new Asset(
+                id: Guid.Parse(assetEntity.Id),
+                values: assetEntity.Values.Select(v => v.Value).ToList()
+                );
+
+        public static AssetTypeEntity ToAssetTypeEntity(this AssetType assetType) =>
+            new AssetTypeEntity
+            {
+                Id = assetType.Id.ToString(),
+                Name = assetType.Name,
+                Properties = assetType.Properties.ToMappedCollection(p => p.ToAssetTypePropertyEntity(assetType.Id.ToString())).ToList()
+            };
+
+        public static AssetEntity ToAssetEntity(this Asset asset, AssetType assetType) =>
+            new AssetEntity
+            {
+                Id = asset.Id.ToString(),
+                AssetTypeEntityId = assetType.Id.ToString(),
+                Values = asset.Values.Select((t, i) => new AssetPropertyValueEntity
+                {
+                    AssetEntityId = asset.Id.ToString(),
+                    Value = t,
+                    Property = new AssetTypePropertyEntity
+                    {
+                        AssetTypeEntityId = assetType.Id.ToString(),
+                        Name = assetType.Properties[i]
+                    }
+                }).ToList()
+            };
+
+        private static AssetTypePropertyEntity ToAssetTypePropertyEntity(this string assetTypeProperty, string assetTypeId) =>
+            new AssetTypePropertyEntity
+            {
+                Name = assetTypeProperty,
+                AssetTypeEntityId = assetTypeId
+            };
     }
 }

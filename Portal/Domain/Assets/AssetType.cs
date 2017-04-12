@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Portal.Domain.Assets
 {
-    public class AssetType : AggregateRoot
+    public sealed class AssetType : AggregateRoot
     {
         #region Events
         public event EventHandler<AssetTypeEventArgs> PropertyMoved;
@@ -20,8 +20,10 @@ namespace Portal.Domain.Assets
         #endregion
 
         #region Ctors
-        public AssetType(string name, List<string> properties)
+        public AssetType(string name, List<string> properties, Guid? id = null)
         {
+            if (id != null)
+                Id = (Guid)id;
             Name = ValidateName(name, 50) ?
                 name : throw new ArgumentException("The name is invalid");
             Properties = ValidateProperties(properties) ?
