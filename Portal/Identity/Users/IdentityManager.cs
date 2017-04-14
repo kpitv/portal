@@ -76,7 +76,7 @@ namespace Portal.Presentation.Identity.Users
                 .Where(e => e.TokenHash == token.GetHashCode().ToString())
                 .Select(e => e.Email).FirstOrDefault();
 
-        public EmailToken GetEmailToken(string email) =>
+        private EmailToken GetEmailToken(string email) =>
             databaseService.EmailTokens
                 .Single(e => string.Equals(e.Email, email, StringComparison.CurrentCultureIgnoreCase));
 

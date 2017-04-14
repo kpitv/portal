@@ -21,8 +21,9 @@ namespace Portal.Presentation.MVC.Users
             string email = manager.GetEmail(token);
             if (string.IsNullOrEmpty(email))
                 return NotFound();
+
             return View();
-        }
+        }   
 
         [HttpGet]
         [AllowAnonymous]
