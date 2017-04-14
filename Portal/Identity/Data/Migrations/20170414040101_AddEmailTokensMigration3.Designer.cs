@@ -8,9 +8,10 @@ using Portal.Presentation.Identity.Data;
 namespace Portal.Presentation.Identity.Data.Migrations
 {
     [DbContext(typeof(IdentityDatabaseService))]
-    partial class IdentityDatabaseServiceModelSnapshot : ModelSnapshot
+    [Migration("20170414040101_AddEmailTokensMigration3")]
+    partial class AddEmailTokensMigration3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

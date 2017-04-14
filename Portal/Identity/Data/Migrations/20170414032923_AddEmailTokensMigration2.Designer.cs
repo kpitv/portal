@@ -8,9 +8,10 @@ using Portal.Presentation.Identity.Data;
 namespace Portal.Presentation.Identity.Data.Migrations
 {
     [DbContext(typeof(IdentityDatabaseService))]
-    partial class IdentityDatabaseServiceModelSnapshot : ModelSnapshot
+    [Migration("20170414032923_AddEmailTokensMigration2")]
+    partial class AddEmailTokensMigration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -204,8 +205,6 @@ namespace Portal.Presentation.Identity.Data.Migrations
             modelBuilder.Entity("Portal.Presentation.Identity.Users.Models.EmailToken", b =>
                 {
                     b.Property<string>("Email");
-
-                    b.Property<DateTime>("Created");
 
                     b.Property<string>("TokenHash");
 

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Portal.Presentation.Identity.Users.Models;
 
 namespace Portal.Presentation.Identity.Data
 {
     public class IdentityDatabaseService : IdentityDbContext
     {
+        public DbSet<EmailToken> EmailTokens { get; set; }
+
         public IdentityDatabaseService(DbContextOptions<IdentityDatabaseService> options)
             : base(options)
         {
@@ -12,6 +15,7 @@ namespace Portal.Presentation.Identity.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<EmailToken>().ForSqlServerToTable(name: "EmailTokens", schema: "identity");
             builder.Entity<IdentityUser>().ForSqlServerToTable(name: "Users", schema: "identity");
             builder.Entity<IdentityRole>().ForSqlServerToTable(name: "Roles", schema: "identity");
             builder.Entity<IdentityUserRole<string>>().ForSqlServerToTable(name: "UserRoles", schema: "identity");

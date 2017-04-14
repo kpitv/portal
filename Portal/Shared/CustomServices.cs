@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Portal.Application.Interfaces;
+using Portal.Application.Shared;
 using Portal.Persistance.Shared;
 using Portal.Presentation.Identity.Data;
-using Portal.Presentation.Identity.Services;
+using Portal.Presentation.Identity.Users;
 
 namespace Portal.Shared
 {
@@ -37,7 +39,9 @@ namespace Portal.Shared
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 7;
             });
-            services.AddScoped<IIdentityManager, IdentityManager>();
+            services.AddScoped<IdentityManager>();
+            services.AddScoped<IEmailService, YandexEmailService>();
+
             #endregion
         }
     }

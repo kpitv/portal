@@ -3,21 +3,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Portal.Presentation.Identity.Services;
+using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Infrastructure;
 using Portal.Shared;
 
-namespace Presentation
+namespace Portal.Presentation
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
+        private IConfigurationRoot Configuration { get; }
 
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddUserSecrets<Startup>();
 
             Configuration = builder.Build();
         }
@@ -26,6 +27,7 @@ namespace Presentation
         {
             services.AddCustomServices(Configuration);
 
+            services.AddSingleton(Configuration);
             services.AddMvc();
 
             services.Configure<RazorViewEngineOptions>(options =>
@@ -35,13 +37,17 @@ namespace Presentation
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IIdentityManager identityManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            IdentityManager identityManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
+
+                identityManager.InitializeUsersAsync();
+                identityManager.InviteUser("mitharp@ya.ru");
             }
 
             app.UseStaticFiles();
@@ -54,8 +60,6 @@ namespace Presentation
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            identityManager.InitializeUsers();
         }
     }
 }

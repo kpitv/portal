@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Presentation
+namespace Portal.Presentation
 {
     public class Program
     {
@@ -9,6 +9,7 @@ namespace Presentation
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .UseUrls("https://localhost:44393/")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

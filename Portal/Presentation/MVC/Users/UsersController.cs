@@ -1,17 +1,27 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Portal.Presentation.Identity.Services;
+using Portal.Presentation.Identity.Users;
 
 namespace Portal.Presentation.MVC.Users
 {
     [Authorize]
     public class UsersController : Controller
     {
-        private readonly IIdentityManager manager;
-        public UsersController(IIdentityManager manager)
+        private readonly IdentityManager manager;
+
+        public UsersController(IdentityManager manager)
         {
             this.manager = manager;
+        }
+
+        [HttpGet]
+        public IActionResult Create(string token)
+        {
+            string email = manager.GetEmail(token);
+            if (string.IsNullOrEmpty(email))
+                return NotFound();
+            return View();
         }
 
         [HttpGet]
