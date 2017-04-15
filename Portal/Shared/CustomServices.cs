@@ -9,6 +9,7 @@ using Portal.Application.Shared;
 using Portal.Persistance.Shared;
 using Portal.Presentation.Identity.Data;
 using Portal.Presentation.Identity.Users;
+using Portal.Presentation.Identity.Users.Models;
 
 namespace Portal.Shared
 {
@@ -23,7 +24,7 @@ namespace Portal.Shared
             services.AddDbContext<IdentityDatabaseService>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseService>()
                 .AddDefaultTokenProviders();
 
@@ -37,7 +38,7 @@ namespace Portal.Shared
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 7;
+                o.Password.RequiredLength = 6;
             });
             services.AddScoped<IdentityManager>();
             services.AddScoped<IEmailService, YandexEmailService>();

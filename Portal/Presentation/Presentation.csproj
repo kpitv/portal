@@ -34,4 +34,9 @@
     <ProjectReference Include="..\Identity\Identity.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="MVC\Users\Views\Create.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

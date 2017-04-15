@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Portal.Presentation.MVC.Users
+@model Portal.Presentation.MVC.Users.ViewModels.CreateViewModel
+@inject IViewLocalizer L
+
+<form asp-action="@nameof(UsersController.Create)" asp-antiforgery="true">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label asp-for="Username">@L["Username"]: </label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">@L["Password"]: </label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ConfirmPassword">@L["Confirm password"]: </label>
+        <input asp-for="ConfirmPassword" type="password" />
+        <span asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <input asp-for="Email" type="hidden" value="@Model.Email" />
+    <div class="form-group">
+        <span>@L["Display language"]: </span>
+        <label asp-for="Language"><input asp-for="Language" type="radio" value="ru" checked />Русский</label>
+        <label asp-for="Language"><input asp-for="Language" type="radio" value="uk" />Українська</label>
+        <label asp-for="Language"><input asp-for="Language" type="radio" value="en" />English</label>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-default" type="submit">@L["Sign up"]</button>
+    </div>
+</form>

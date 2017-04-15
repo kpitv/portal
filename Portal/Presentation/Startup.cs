@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +31,9 @@ namespace Portal.Presentation
             services.AddCustomServices(Configuration);
 
             services.AddSingleton(Configuration);
-            services.AddMvc();
+            services.AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
             services.Configure<RazorViewEngineOptions>(options =>
             {
@@ -49,6 +54,20 @@ namespace Portal.Presentation
                 identityManager.InitializeUsersAsync();
                 identityManager.InviteUser("mitharp@ya.ru");
             }
+
+            var supportedCultures = new List<CultureInfo>()
+                {
+                    new CultureInfo("ru"),
+                    new CultureInfo("uk"),
+                    new CultureInfo("en")
+                };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseStaticFiles();
 

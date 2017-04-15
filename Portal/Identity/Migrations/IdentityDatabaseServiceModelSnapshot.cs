@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Portal.Presentation.Identity.Data;
 
-namespace Portal.Presentation.Identity.Data.Migrations
+namespace Portal.Presentation.Identity.Migrations
 {
     [DbContext(typeof(IdentityDatabaseService))]
-    [Migration("20170209175408_InitialMigration")]
-    partial class InitialMigration
+    partial class IdentityDatabaseServiceModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
+                .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -119,6 +119,10 @@ namespace Portal.Presentation.Identity.Data.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.HasAnnotation("SqlServer:Schema", "identity");
+
+                    b.HasAnnotation("SqlServer:TableName", "Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
@@ -202,10 +206,28 @@ namespace Portal.Presentation.Identity.Data.Migrations
                     b.HasAnnotation("SqlServer:TableName", "UserTokens");
                 });
 
-            modelBuilder.Entity("Portal.Presentation.Identity.Models.User", b =>
+            modelBuilder.Entity("Portal.Presentation.Identity.Users.Models.EmailToken", b =>
+                {
+                    b.Property<string>("Email");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("TokenHash");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("EmailTokens");
+
+                    b.HasAnnotation("SqlServer:Schema", "identity");
+
+                    b.HasAnnotation("SqlServer:TableName", "EmailTokens");
+                });
+
+            modelBuilder.Entity("Portal.Presentation.Identity.Users.Models.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser");
 
+                    b.Property<string>("Language");
 
                     b.ToTable("User");
 

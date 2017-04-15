@@ -14,12 +14,12 @@ namespace Portal.Presentation.Identity.Users
         private readonly IdentityDatabaseService databaseService;
         private readonly IEmailService emailService;
 
-        public UserManager<IdentityUser> User { get; }
-        public SignInManager<IdentityUser> SignIn { get; }
+        public UserManager<User> User { get; }
+        public SignInManager<User> SignIn { get; }
         public RoleManager<IdentityRole> Role { get; }
 
         public IdentityManager(IdentityDatabaseService databaseService, IEmailService emailService,
-            UserManager<IdentityUser> user, SignInManager<IdentityUser> signIn,
+            UserManager<User> user, SignInManager<User> signIn,
             RoleManager<IdentityRole> role)
         {
             this.databaseService = databaseService;
@@ -35,11 +35,11 @@ namespace Portal.Presentation.Identity.Users
 
             if (databaseService.Users.Any()) return;
 
-            var users = new List<IdentityUser>()
+            var users = new List<User>()
             {
-                new IdentityUser("grandepianisto"),
-                new IdentityUser("stasphere"),
-                new IdentityUser("shoolz")
+                new User("grandepianisto"),
+                new User("stasphere"),
+                new User("shoolz")
             };
 
             users.ForEach(u => User.CreateAsync(u, "12345678"));
@@ -50,13 +50,9 @@ namespace Portal.Presentation.Identity.Users
             ClearExpiredEmailTokens();
 
             string token = GenerateToken();
-
-            var emailToken = GetEmailToken(email);
-            if (emailToken != null)
-            {
-                databaseService.EmailTokens.Remove(emailToken);
-                databaseService.SaveChanges();
-            }
+            
+            if (GetEmailToken(email) != null)
+                RemoveEmailToken(email);
 
             databaseService.EmailTokens.Add(new EmailToken
             {
@@ -78,12 +74,18 @@ namespace Portal.Presentation.Identity.Users
 
         public EmailToken GetEmailToken(string email) =>
             databaseService.EmailTokens
-                .Single(e => string.Equals(e.Email, email, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(e => string.Equals(e.Email, email, StringComparison.CurrentCultureIgnoreCase));
 
         private void ClearExpiredEmailTokens()
         {
             databaseService.RemoveRange(databaseService.EmailTokens
                 .Where(e => e.Created.AddHours(24) < DateTime.Now).ToList());
+            databaseService.SaveChanges();
+        }
+
+        public void RemoveEmailToken(string email)
+        {
+            databaseService.EmailTokens.Remove(GetEmailToken(email));
             databaseService.SaveChanges();
         }
 
@@ -95,5 +97,11 @@ namespace Portal.Presentation.Identity.Users
                 token += (char)random.Next(97, 122);
             return token;
         }
+
+        public bool VerifyEmail(string email) =>
+            !databaseService.Users.Any(u => string.Equals(u.Email, email, StringComparison.CurrentCultureIgnoreCase));
+
+        public bool VerifyUsername(string username) =>
+            !databaseService.Users.Any(u => string.Equals(u.UserName, username, StringComparison.CurrentCultureIgnoreCase));
     }
 }
