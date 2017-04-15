@@ -38,15 +38,13 @@ namespace Portal.Persistance.Migrations
                 {
                     b.Property<string>("AssetEntityId");
 
-                    b.Property<string>("AssetTypePropertyEntityId");
+                    b.Property<string>("PropertyName");
 
                     b.Property<string>("PropertyAssetTypeEntityId");
 
-                    b.Property<string>("PropertyName");
-
                     b.Property<string>("Value");
 
-                    b.HasKey("AssetEntityId", "AssetTypePropertyEntityId");
+                    b.HasKey("AssetEntityId", "PropertyName");
 
                     b.HasIndex("PropertyName", "PropertyAssetTypeEntityId");
 
@@ -206,7 +204,7 @@ namespace Portal.Persistance.Migrations
 
             modelBuilder.Entity("Portal.Persistance.Assets.Entities.AssetTypePropertyEntity", b =>
                 {
-                    b.HasOne("Portal.Persistance.Assets.Entities.AssetTypeEntity", "AssetType")
+                    b.HasOne("Portal.Persistance.Assets.Entities.AssetTypeEntity")
                         .WithMany("Properties")
                         .HasForeignKey("AssetTypeEntityId")
                         .OnDelete(DeleteBehavior.Cascade);

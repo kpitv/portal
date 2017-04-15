@@ -54,7 +54,7 @@ namespace Portal.Persistance.Shared
             builder.Entity<AssetTypePropertyEntity>().ForSqlServerToTable(name: "AssetTypeProperties", schema: "team");
 
             builder.Entity<AssetPropertyValueEntity>()
-                .HasKey(p => new { p.AssetEntityId, p.Property });
+                .HasKey(p => new { p.AssetEntityId, p.PropertyName });
             builder.Entity<AssetPropertyValueEntity>().ForSqlServerToTable(name: "AssetPropertyValues", schema: "team"); 
             #endregion
 

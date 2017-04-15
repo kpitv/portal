@@ -75,6 +75,7 @@ namespace Portal.Persistance.Shared
             .ToList();
         #endregion
 
+        #region Asset
         public static AssetType ToAssetType(this AssetTypeEntity assetTypeEntity) =>
             new AssetType(
                 id: Guid.Parse(assetTypeEntity.Id),
@@ -93,7 +94,8 @@ namespace Portal.Persistance.Shared
             {
                 Id = assetType.Id.ToString(),
                 Name = assetType.Name,
-                Properties = assetType.Properties.ToMappedCollection(p => p.ToAssetTypePropertyEntity(assetType.Id.ToString())).ToList()
+                Properties = assetType.Properties.ToMappedCollection(p =>
+                        p.ToAssetTypePropertyEntity(assetType.Id.ToString())).ToList()
             };
 
         public static AssetEntity ToAssetEntity(this Asset asset, AssetType assetType) =>
@@ -105,11 +107,8 @@ namespace Portal.Persistance.Shared
                 {
                     AssetEntityId = asset.Id.ToString(),
                     Value = t,
-                    Property = new AssetTypePropertyEntity
-                    {
-                        AssetTypeEntityId = assetType.Id.ToString(),
-                        Name = assetType.Properties[i]
-                    }
+                    PropertyName = assetType.Properties[i],
+                    PropertyAssetTypeEntityId = assetType.Id.ToString()
                 }).ToList()
             };
 
@@ -118,6 +117,7 @@ namespace Portal.Persistance.Shared
             {
                 Name = assetTypeProperty,
                 AssetTypeEntityId = assetTypeId
-            };
+            }; 
+        #endregion
     }
 }
