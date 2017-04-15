@@ -31,6 +31,7 @@ namespace Portal.Presentation
             services.AddCustomServices(Configuration);
 
             services.AddSingleton(Configuration);
+            services.AddLocalization();
             services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
