@@ -41,7 +41,14 @@ namespace Portal.Domain.Assets
             var newValues = Values.ToList();
             newValues.RemoveAt(e.PropertyIndex);
             Values = newValues;
-        } 
+        }
+        #endregion
+
+        #region Methods
+        public void Update(List<string> values)
+        {
+            Values = values;
+        }
         #endregion
     }
 }

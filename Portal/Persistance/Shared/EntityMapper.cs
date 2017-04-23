@@ -80,44 +80,56 @@ namespace Portal.Persistance.Shared
             new AssetType(
                 id: Guid.Parse(assetTypeEntity.Id),
                 name: assetTypeEntity.Name,
-                properties: assetTypeEntity.Properties.Select(p => p.Name).ToList()
+                properties: assetTypeEntity.Properties.OrderBy(p => p.Index).Select(p => p.Name).ToList()
                 );
 
         public static Asset ToAsset(this AssetEntity assetEntity) =>
             new Asset(
                 id: Guid.Parse(assetEntity.Id),
-                values: assetEntity.Values.Select(v => v.Value).ToList()
+                values: assetEntity.Values.OrderBy(v => v.Index).Select(v => v.Value).ToList()
                 );
 
-        public static AssetTypeEntity ToAssetTypeEntity(this AssetType assetType) =>
-            new AssetTypeEntity
+        public static AssetTypeEntity ToAssetTypeEntity(this AssetType assetType)
+        {
+            var assetTypeEntity = new AssetTypeEntity
             {
                 Id = assetType.Id.ToString(),
-                Name = assetType.Name,
-                Properties = assetType.Properties.ToMappedCollection(p =>
-                        p.ToAssetTypePropertyEntity(assetType.Id.ToString())).ToList()
+                Name = assetType.Name
             };
 
-        public static AssetEntity ToAssetEntity(this Asset asset, AssetType assetType) =>
-            new AssetEntity
+            for (int i = 0; i < assetType.Properties.Count; i++)
+                assetTypeEntity.Properties.Add(assetType.Properties[i]
+                    .ToAssetTypePropertyEntity(assetType.Id.ToString(), i));
+            
+            return assetTypeEntity;
+        }
+
+        public static AssetEntity ToAssetEntity(this Asset asset, AssetType assetType)
+        {
+            return new AssetEntity
             {
                 Id = asset.Id.ToString(),
                 AssetTypeEntityId = assetType.Id.ToString(),
                 Values = asset.Values.Select((t, i) => new AssetPropertyValueEntity
-                {
-                    AssetEntityId = asset.Id.ToString(),
-                    Value = t,
-                    PropertyName = assetType.Properties[i],
-                    PropertyAssetTypeEntityId = assetType.Id.ToString()
-                }).ToList()
+                    {
+                        AssetEntityId = asset.Id.ToString(),
+                        Value = t,
+                        PropertyName = assetType.Properties[i],
+                        PropertyAssetTypeEntityId = assetType.Id.ToString(),
+                        Index = i
+                    })
+                    .ToList()
             };
+        }
 
-        private static AssetTypePropertyEntity ToAssetTypePropertyEntity(this string assetTypeProperty, string assetTypeId) =>
+        private static AssetTypePropertyEntity ToAssetTypePropertyEntity(this string assetTypeProperty,
+            string assetTypeId, int index) =>
             new AssetTypePropertyEntity
             {
                 Name = assetTypeProperty,
-                AssetTypeEntityId = assetTypeId
-            }; 
+                AssetTypeEntityId = assetTypeId,
+                Index = index
+            };
         #endregion
     }
 }

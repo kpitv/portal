@@ -14,5 +14,6 @@ namespace Portal.Persistance.Assets.Entities
         public AssetTypePropertyEntity Property { get; set; }
         public string AssetEntityId { get; set; }
         public AssetEntity Asset { get; set; }
+        public int Index { get; set; }
     }
 }
