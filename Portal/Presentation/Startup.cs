@@ -53,7 +53,7 @@ namespace Portal.Presentation
                 app.UseBrowserLink();
 
                 identityManager.InitializeUsersAsync();
-                identityManager.InviteUser("mitharp@ya.ru");
+                // identityManager.InviteUser("mitharp@ya.ru");
             }
 
             var supportedCultures = new List<CultureInfo>()

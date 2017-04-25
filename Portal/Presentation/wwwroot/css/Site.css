@@ -18,3 +18,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+#assetTypeProperties input {
+    float: left;
+    margin-right: 15px;
+}
