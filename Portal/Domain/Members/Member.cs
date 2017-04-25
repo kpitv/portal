@@ -22,21 +22,22 @@ namespace Portal.Domain.Members
         public Member(string userId, MemberName name, string email, List<Phone> phones,
             List<Role> roles, Guid? id = null, string about = null, Dictionary<ContactLink, string> contactLinks = null)
         {
-            if (id != null)
+            if (id != Guid.Empty && id != null)
                 Id = (Guid)id;
             if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentNullException(nameof(userId));
             if (email == null) throw new ArgumentNullException(nameof(email));
             if (phones == null || phones.Count == 0) throw new ArgumentNullException(nameof(phones));
             if (roles == null || roles.Count == 0) throw new ArgumentNullException(nameof(roles));
-            if (contactLinks?.Count == 0) throw new ArgumentNullException(nameof(contactLinks));
+            if (contactLinks?.Count == 0) contactLinks = null;
 
             if (ValidateEmail(email))
                 Email = email;
             else throw new ArgumentException(nameof(email));
-            if (ValidateAbout(about))
-                About = about;
-            else throw new ArgumentException(nameof(about));
+            if (about != null)
+                if (ValidateAbout(about))
+                    About = about;
+                else throw new ArgumentException(nameof(about));
 
             UserId = userId;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -58,21 +59,21 @@ namespace Portal.Domain.Members
             if (contactLinks?.Count == 0)
                 ContactLinks = null;
 
-            if (email?.Length == 0)
-                Email = null;
-            else if (ValidateEmail(email))
-                Email = email;
-            else throw new ArgumentException(nameof(email));
+            if (email != null)
+                if (ValidateEmail(email))
+                    Email = email;
+                else throw new ArgumentException(nameof(email));
 
             if (about?.Length == 0)
                 About = null;
-            else if (ValidateAbout(about))
-                About = about;
-            else throw new ArgumentException(nameof(about));
+            if (about != null)
+                if (ValidateAbout(about))
+                    About = about;
+                else throw new ArgumentException(nameof(about));
 
             Name = name ?? Name;
             Phones = phones ?? Phones;
-            Roles = roles;
+            Roles = roles ?? Roles;
             ContactLinks = contactLinks ?? ContactLinks;
         }
         public static bool ValidateEmail(string email) =>

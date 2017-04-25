@@ -36,6 +36,14 @@ namespace Portal.Presentation
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfileConfiguration());
+            });
+
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.ViewLocationExpanders.Clear();
@@ -52,8 +60,8 @@ namespace Portal.Presentation
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
 
-                identityManager.InitializeUsersAsync();
-                identityManager.InviteUser("mitharp@ya.ru");
+                //identityManager.InitializeUsersAsync();
+                identityManager.InviteUser("stas.sphere@gmail.com");
             }
 
             var supportedCultures = new List<CultureInfo>()

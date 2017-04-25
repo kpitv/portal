@@ -5,11 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Portal.Application.Interfaces;
+using Portal.Application.Members.Commands;
+using Portal.Application.Members.Commands.Factory;
+using Portal.Application.Members.Queries;
 using Portal.Application.Shared;
+using Portal.Domain.Members;
+using Portal.Persistance.Members;
 using Portal.Persistance.Shared;
 using Portal.Presentation.Identity.Data;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
+using System.Globalization;
 
 namespace Portal.Shared
 {
@@ -19,6 +25,12 @@ namespace Portal.Shared
         {
             services.AddDbContext<DatabaseService>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
+
+            services.AddScoped<IMemberCommands, MemberCommands>();
+            services.AddScoped<IMemberFactory, MemberFactory>();
+            services.AddScoped<IMemberQueries, MemberQueries>();
+            services.AddScoped<IRepository<Member>, MemberRepository>();
+            services.AddScoped<IEmailService, YandexEmailService>();
 
             #region Identity configuration
             services.AddDbContext<IdentityDatabaseService>(options =>
@@ -41,7 +53,6 @@ namespace Portal.Shared
                 o.Password.RequiredLength = 6;
             });
             services.AddScoped<IdentityManager>();
-            services.AddScoped<IEmailService, YandexEmailService>();
 
             #endregion
         }

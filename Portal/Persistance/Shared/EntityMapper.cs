@@ -54,7 +54,7 @@ namespace Portal.Persistance.Shared
                 Email = member.Email,
                 Phones = member.Phones.ToMappedCollection(a => a.ToPhoneEntity(member.Id.ToString())).ToList(),
                 Roles = member.Roles.ToMappedCollection(a => a.ToRoleEntity(member.Id.ToString())).ToList(),
-                ContactLinks = member.ContactLinks.ToContactLinkEntities(member.Id.ToString()),
+                ContactLinks = member.ContactLinks?.ToContactLinkEntities(member.Id.ToString()),
                 About = member.About
             };
 

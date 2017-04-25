@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
@@ -41,13 +40,14 @@ namespace Portal.Presentation.MVC.Users
         {
             if (!ModelState.IsValid)
                 return View(model);
-            await manager.User.CreateAsync(password: model.Password,
-                user: new User
-                {
-                    Language = model.Language,
-                    UserName = model.Username,
-                    Email = model.Email
-                });
+            var user = new User
+            {
+                Language = model.Language,
+                UserName = model.Username,
+                Email = model.Email
+            };
+            await manager.User.CreateAsync(user, model.Password);
+            await manager.SignIn.SignInAsync(user, isPersistent: false);
             manager.RemoveEmailToken(model.Email);
             return RedirectToAction("Create", "Members");
         }

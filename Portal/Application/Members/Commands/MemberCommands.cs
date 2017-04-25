@@ -19,7 +19,8 @@ namespace Portal.Application.Members.Commands
 
         public void Create(MemberModel model)
         {
-            repository.Create(factory.Create(model));
+            var member = factory.Create(model);
+            repository.Create(member);
             repository.Save();
         }
 

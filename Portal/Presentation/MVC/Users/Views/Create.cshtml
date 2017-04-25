@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using Portal.Presentation.MVC.Users
+﻿@using Portal.Presentation.MVC.Users
 @model Portal.Presentation.MVC.Users.ViewModels.CreateViewModel
 @inject IViewLocalizer L
 
@@ -7,17 +6,17 @@
     <div asp-validation-summary="ModelOnly"></div>
     <div class="form-group">
         <label asp-for="Username">@L["Username"]: </label>
-        <input asp-for="Username" />
+        <input asp-for="Username" class="form-control" />
         <span asp-validation-for="Username"></span>
     </div>
     <div class="form-group">
         <label asp-for="Password">@L["Password"]: </label>
-        <input asp-for="Password" type="password" />
+        <input asp-for="Password" type="password" class="form-control"/>
         <span asp-validation-for="Password"></span>
     </div>
     <div class="form-group">
         <label asp-for="ConfirmPassword">@L["Confirm password"]: </label>
-        <input asp-for="ConfirmPassword" type="password" />
+        <input asp-for="ConfirmPassword" type="password" class="form-control"/>
         <span asp-validation-for="ConfirmPassword"></span>
     </div>
     <input asp-for="Email" type="hidden" value="@Model.Email" />
@@ -28,6 +27,6 @@
         <label asp-for="Language"><input asp-for="Language" type="radio" value="en" />English</label>
     </div>
     <div class="form-group">
-        <button class="btn btn-default" type="submit">@L["Sign up"]</button>
+        <button class="btn btn-primary" type="submit">@L["Sign up"]</button>
     </div>
 </form>

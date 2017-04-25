@@ -18,9 +18,9 @@ namespace Portal.Application.Members.Commands.Models
         public string LastNameInUkrainian { get; set; }
         // Contacts
         public string Email { get; set; }
-        public List<string> PhoneNumbers { get; set; }
-        public List<string> Roles { get; set; }
-        public Dictionary<string, string> ContactLinks { get; set; }
+        public List<string> PhoneNumbers { get; set; } = new List<string>();
+        public List<string> Roles { get; set; } = new List<string>();
+        public Dictionary<string, string> ContactLinks { get; set; } = new Dictionary<string, string>();
         // Other
         public string About { get; set; }
     }

@@ -1,0 +1,29 @@
+﻿@model Portal.Presentation.MVC.Members.ViewModels.ProfileViewModel
+
+<h2 class="name-header">@Model.Member.Name.FirstLastName.InEnglish</h2>
+@if (Model.IsCurrent)
+{
+    <a asp-action="Edit" class="btn btn-lg glyphicon glyphicon-edit"></a>
+}
+<div>
+    @if (!string.IsNullOrEmpty(Model.Member.About))
+    {
+        <h3>@L["About me"]:</h3>
+        <h4>@Model.Member.About</h4>
+    }
+
+    <h3>@L["Information"]:</h3>
+
+    <div>
+        <div>@L["Email"]: <span>@Model.Member.Email</span></div>
+        <div>@L["Phone"]: <span>@Model.Member.Phones[0].NumberWithBracesAndDashes (@Model.Member.Phones[0].Operator)</span></div>
+        <div>@L["Role"]: <span>@Model.Member.Roles[0]</span></div>
+        <div>
+            Links:
+            @foreach (var contact in Model.Member.ContactLinks)
+            {
+                <a href="http://@contact.Value">@contact.Key</a>
+            }
+        </div>
+    </div>
+</div>

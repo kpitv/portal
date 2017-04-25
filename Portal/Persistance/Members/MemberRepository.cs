@@ -5,6 +5,7 @@ using Portal.Domain.Members;
 using Portal.Persistance.Shared;
 using Portal.Application.Shared;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Portal.Persistance.Members
 {
@@ -19,13 +20,17 @@ namespace Portal.Persistance.Members
 
         #region Queries
         public IEnumerable<Member> Find(Predicate<Member> predicate) =>
-            databaseService.Members.ToMappedCollection(EntityMapper.ToMember).Where(m => predicate(m));
+            databaseService.Members.Include(m => m.ContactLinks).Include(m => m.Phones).Include(m => m.Roles)
+            .ToMappedCollection(EntityMapper.ToMember).Where(m => predicate(m));
 
         public Member Get(Guid id) =>
-            databaseService.Members.Single(a => a.Id == id.ToString()).ToMember();
+            databaseService.Members
+            .Include(m => m.ContactLinks).Include(m => m.Phones).Include(m => m.Roles)
+            .Single(a => a.Id == id.ToString()).ToMember();
 
         public IEnumerable<Member> GetAll() =>
-            databaseService.Members.ToMappedCollection(EntityMapper.ToMember);
+            databaseService.Members.Include(m => m.ContactLinks).Include(m => m.Phones).Include(m => m.Roles)
+            .ToMappedCollection(EntityMapper.ToMember);
         #endregion
 
         #region Commands
@@ -47,7 +52,7 @@ namespace Portal.Persistance.Members
         public void Save()
         {
             databaseService.SaveChanges();
-        } 
+        }
         #endregion
     }
 }

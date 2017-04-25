@@ -1,0 +1,19 @@
+﻿@model Dictionary<string, Portal.Domain.Members.Member>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+    </tr>
+    @foreach (var member in Model)
+    {
+        <tr>
+            <td><a asp-action="Profile" asp-route-username="@member.Key">@member.Value.Name.LastNameWithInitials.InEnglish</a></td>
+            <td>@member.Value.Email</td>
+            <td>@member.Value.Phones[0].NumberWithSpaces (@member.Value.Phones[0].Operator)</td>
+            <td>@member.Value.Roles[0]</td>
+        </tr>
+    }
+</table>

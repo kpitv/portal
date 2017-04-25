@@ -15,7 +15,7 @@ namespace Portal.Application.Members.Commands.Factory
 
             var memberName = new MemberName(
                 new LangSet(model.FirstNameInEnglish, model.FirstNameInRussian, model.FirstNameInUkrainian),
-                new LangSet(model.SecondNameInEnglish, model.SecondNameInRussian, model.SecondNameInUkrainian),
+                new LangSet("", model.SecondNameInRussian, model.SecondNameInUkrainian),
                 new LangSet(model.LastNameInEnglish, model.LastNameInRussian, model.LastNameInUkrainian)
             );
             var phones = model.PhoneNumbers.Select(number => new Phone(number)).ToList();
@@ -30,7 +30,7 @@ namespace Portal.Application.Members.Commands.Factory
 
             var member = new Member(model.UserId, memberName, model.Email, phones, roles, memberId);
 
-            if (model.ContactLinks != null)
+            if (model.ContactLinks.Any())
             {
                 var contactLinks = new Dictionary<ContactLink, string>();
                 foreach (var contact in model.ContactLinks)
