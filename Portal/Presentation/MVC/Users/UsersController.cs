@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
+using Portal.Presentation.MVC.Home;
 using Portal.Presentation.MVC.Users.ViewModels;
-using Presentation.Home;
 
 namespace Portal.Presentation.MVC.Users
 {

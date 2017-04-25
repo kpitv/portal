@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Home
+namespace Portal.Presentation.MVC.Home
 {
     [Authorize]
     public class HomeController : Controller
