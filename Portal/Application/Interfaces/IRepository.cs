@@ -13,5 +13,6 @@ namespace Portal.Application.Interfaces
         void Update(T aggregateRoot);
         void Delete(Guid id);
         void Save();
+        void DetachAllEntities();
     }
 }

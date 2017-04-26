@@ -1,0 +1,31 @@
+﻿@model Portal.Presentation.MVC.Users.ViewModels.ChangePasswordViewModel
+
+
+<h3>@L["Change your user settings:"]</h3>
+@*<form asp-action="ChangeUsername">
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+        <label asp-for="Username">@L["Username"]: </label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">@L["Change"]</button>
+    </div>
+</form>*@
+<form asp-action="ChangePassword">
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+        <label asp-for="OldPassword">@L["Old password"]: </label>
+        <input asp-for="OldPassword" type="password" class="form-control"/>
+        <span asp-validation-for="OldPassword"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NewPassword">@L["New password"]: </label>
+        <input asp-for="NewPassword" type="password" class="form-control"/>
+        <span asp-validation-for="NewPassword"></span>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">@L["Change"]</button>
+    </div>
+</form>

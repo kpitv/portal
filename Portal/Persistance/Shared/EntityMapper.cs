@@ -37,12 +37,13 @@ namespace Portal.Persistance.Shared
         public static ContactLink ToContactLink(this ContactLinkEntity contactLinkEntity) =>
             (ContactLink)Enum.Parse(typeof(ContactLink), contactLinkEntity.Contact);
 
-        public static MemberEntity ToMemberEntity(this Member member) =>
-            new MemberEntity
+        public static MemberEntity ToMemberEntity(this Member member)
+        {
+            var entity = new MemberEntity
             {
                 Id = member.Id.ToString(),
                 UserId = member.UserId,
-                FirstNameInEnglish = member.Name.FirstName.InEnglish,
+                FirstNameInEnglish = member.Name.FirstName.InEnglish,   
                 FirstNameInRussian = member.Name.FirstName.InRussian,
                 FirstNameInUkrainian = member.Name.FirstName.InUkrainian,
                 SecondNameInEnglish = member.Name.SecondName.InEnglish,
@@ -57,6 +58,12 @@ namespace Portal.Persistance.Shared
                 ContactLinks = member.ContactLinks?.ToContactLinkEntities(member.Id.ToString()),
                 About = member.About
             };
+            foreach (var role in entity.Roles)
+            {
+                role.Member = entity;
+            }
+            return entity;
+        }
 
         public static PhoneEntity ToPhoneEntity(this Phone phone, string memberId) =>
             new PhoneEntity { Number = phone.Number, MemberId = memberId };

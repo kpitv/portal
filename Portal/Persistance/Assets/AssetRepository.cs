@@ -48,6 +48,11 @@ namespace Portal.Persistance.Assets
         {
             databaseService.SaveChanges();
         }
+
+        public void DetachAllEntities()
+        {
+            databaseService.DetachAllEntities();
+        }
         #endregion
     }
 }

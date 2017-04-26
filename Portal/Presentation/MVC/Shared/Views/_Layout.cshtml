@@ -13,7 +13,8 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <ul class="nav navbar-nav">
-                <li><a asp-controller="Members">@L["Members"]</a></li>
+                <li><a asp-controller="Members" asp-action="Index">@L["Members"]</a></li>
+                <li><a asp-controller="Managers" asp-action="Index">@L["Management"]</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @await Component.InvokeAsync("Login")

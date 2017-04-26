@@ -61,7 +61,8 @@ namespace Portal.Presentation.MVC.Members
             var model = new ProfileViewModel
             {
                 Member = member,
-                IsCurrent = user.Id == currentUser.Id
+                IsCurrent = user.Id == currentUser.Id,
+                Username = username
             };
             return View(model);
         }
@@ -109,6 +110,106 @@ namespace Portal.Presentation.MVC.Members
 
                 commands.Create(member);
                 return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                foreach (string item in Enum.GetNames(typeof(Role)))
+                    model.Roles.Add(item);
+                foreach (string item in Enum.GetNames(typeof(ContactLink)))
+                    model.ContactLinks.Add(item, "");
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string username)
+        {
+
+
+            var user = await manager.User.FindByNameAsync(username);
+            if (user is null)
+                return NotFound();
+
+            var currentUser = await manager.User.GetUserAsync(HttpContext.User);
+            var member = queries.FindMembers(m => m.UserId == user.Id).FirstOrDefault();
+            if (member is null)
+                if (user.Id == currentUser.Id)
+                    RedirectToAction("Create");
+                else
+                    return NotFound();
+
+            var model = new MemberViewModel
+            {
+                FirstNameInEnglish = member.Name.FirstName.InEnglish,
+                LastNameInEnglish = member.Name.LastName.InEnglish,
+                FirstNameInRussian = member.Name.FirstName.InRussian,
+                SecondNameInRussian = member.Name.SecondName.InRussian,
+                LastNameInRussian = member.Name.LastName.InRussian,
+                FirstNameInUkrainian = member.Name.FirstName.InUkrainian,
+                SecondNameInUkrainian = member.Name.SecondName.InUkrainian,
+                LastNameInUkrainian = member.Name.LastName.InUkrainian,
+                About = member.About,
+                Email = member.Email,
+                PhoneNumber = member.Phones[0].Number,
+                SelectedRole = member.Roles[0].ToString(),
+                Id = member.Id.ToString(),
+                Username = username
+            };
+
+            foreach (string item in Enum.GetNames(typeof(Role)))
+                model.Roles.Add(item);
+            foreach (string item in Enum.GetNames(typeof(ContactLink)))
+                model.ContactLinks.Add(item, "");
+
+            foreach (var contact in member.ContactLinks)
+                model.ContactLinks[contact.Key.ToString()] = contact.Value;
+
+            model.Vk = model.ContactLinks["Vk"];
+            model.Facebook = model.ContactLinks["Facebook"];
+            model.Instagram = model.ContactLinks["Instagram"];
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(MemberViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                foreach (string item in Enum.GetNames(typeof(Role)))
+                    model.Roles.Add(item);
+                foreach (string item in Enum.GetNames(typeof(ContactLink)))
+                    model.ContactLinks.Add(item, "");
+                return View(model);
+            }
+
+            var user = await manager.User.FindByNameAsync(model.Username);
+            if (user is null)
+                return NotFound();
+
+            try
+            {
+                var currentUser = await manager.User.GetUserAsync(HttpContext.User);
+
+                var newMember = mapper.Map<MemberModel>(model);
+                newMember.UserId = manager.User.GetUserId(HttpContext.User);
+                newMember.Roles.Add(model.SelectedRole);
+                newMember.PhoneNumbers.Add(model.PhoneNumber);
+                newMember.Id = model.Id;
+
+                commands.DetachAllEntities();
+
+                if (!string.IsNullOrEmpty(model.Vk))
+                    newMember.ContactLinks.Add("Vk", model.Vk);
+                if (!string.IsNullOrEmpty(model.Facebook))
+                    newMember.ContactLinks.Add("Facebook", model.Facebook);
+                if (!string.IsNullOrEmpty(model.Instagram))
+                    newMember.ContactLinks.Add("Instagram", model.Instagram);
+
+                commands.Update(newMember);
+                return RedirectToAction("Profile", new {username = model.Username});
             }
             catch (Exception ex)
             {

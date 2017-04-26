@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Portal.Application.Interfaces;
+using Portal.Application.Members.Commands.Models;
 using Portal.Domain.Members;
 
 namespace Portal.Application.Members.Queries
@@ -20,11 +21,12 @@ namespace Portal.Application.Members.Queries
         public Member GetMember(string id)
         {
             if (!Guid.TryParse(id, out Guid memberId))
-                throw  new ArgumentException("Invalid id");
+                throw new ArgumentException("Invalid id");
             return repository.Get(memberId);
         }
 
         public IEnumerable<Member> FindMembers(Predicate<Member> predicate) =>
             repository.Find(predicate);
+
     }
 }

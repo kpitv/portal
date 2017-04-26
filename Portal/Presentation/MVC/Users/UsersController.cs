@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
@@ -50,6 +52,45 @@ namespace Portal.Presentation.MVC.Users
             await manager.SignIn.SignInAsync(user, isPersistent: false);
             manager.RemoveEmailToken(model.Email);
             return RedirectToAction("Create", "Members");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Settings()
+        {
+            var user = await manager.User.GetUserAsync(HttpContext.User);
+            return View(new ChangePasswordViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUsername(ChangeUsernameViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("Settings");
+
+            var user = await manager.User.GetUserAsync(HttpContext.User);
+
+            if (!string.Equals(model.Username, user.UserName, StringComparison.CurrentCultureIgnoreCase))
+                await manager.User.SetUserNameAsync(user, model.Username);
+
+            return RedirectToAction("Settings");
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("Settings");
+            var user = await manager.User.GetUserAsync(HttpContext.User);
+
+            var result = await manager.User.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (result.Succeeded)
+                return RedirectToAction("Settings");
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View("Settings");
         }
 
         [HttpGet]

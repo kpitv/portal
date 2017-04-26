@@ -1,0 +1,16 @@
+﻿@model Portal.Presentation.MVC.Managers.ViewModels.InviteUserViewModel
+
+<form asp-action="InviteUser" class="portal-form">
+    <div class="form-group">
+        <label asp-for="Email">Invite user</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+</form>
+
+@if (Model.Message != null)
+{
+    <div>@Model.Message</div>
+}

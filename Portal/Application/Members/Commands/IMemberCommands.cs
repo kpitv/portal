@@ -7,5 +7,6 @@ namespace Portal.Application.Members.Commands
        void Create(MemberModel model);
        void Update(MemberModel model);
        void Delete(string id);
+       void DetachAllEntities();
    }
 }

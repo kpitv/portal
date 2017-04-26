@@ -1,6 +1,5 @@
 ﻿@using Portal.Presentation.MVC.Users
 @model Portal.Presentation.MVC.Users.ViewModels.CreateViewModel
-@inject IViewLocalizer L
 
 <form asp-action="@nameof(UsersController.Create)" asp-antiforgery="true">
     <div asp-validation-summary="ModelOnly"></div>

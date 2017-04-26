@@ -26,7 +26,8 @@ namespace Portal.Application.Members.Commands
 
         public void Update(MemberModel model)
         {
-            repository.Update(factory.Create(model, model.Id));
+            var member = factory.Create(model, model.Id);
+            repository.Update(member);
             repository.Save();
         }
 
@@ -37,6 +38,11 @@ namespace Portal.Application.Members.Commands
 
             repository.Delete(memberId);
             repository.Save();
+        }
+
+        public void DetachAllEntities()
+        {
+            repository.DetachAllEntities();
         }
     }
 }

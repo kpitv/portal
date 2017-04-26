@@ -5,7 +5,7 @@ using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
 {
-    public sealed class Member : AggregateRoot
+    public sealed class Member : AggregateRoot, IDisposable
     {
         #region Properties
         public string UserId { get; }
@@ -81,5 +81,10 @@ namespace Portal.Domain.Members
         public static bool ValidateAbout(string about, int maxLength = 500) =>
              about.Length > 0 && about.Length <= maxLength;
         #endregion
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

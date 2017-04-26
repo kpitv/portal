@@ -41,7 +41,8 @@ namespace Portal.Persistance.Members
 
         public void Update(Member aggregateRoot)
         {
-            databaseService.Members.Update(aggregateRoot.ToMemberEntity());
+            var memberEntity = aggregateRoot.ToMemberEntity();
+            databaseService.Members.Update(memberEntity);
         }
 
         public void Delete(Guid id)
@@ -52,6 +53,11 @@ namespace Portal.Persistance.Members
         public void Save()
         {
             databaseService.SaveChanges();
+        }
+
+        public void DetachAllEntities()
+        {
+            databaseService.DetachAllEntities();
         }
         #endregion
     }

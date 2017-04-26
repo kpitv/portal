@@ -3,7 +3,7 @@
 <h2 class="name-header">@Model.Member.Name.FirstLastName.InEnglish</h2>
 @if (Model.IsCurrent)
 {
-    <a asp-action="Edit" class="btn btn-lg glyphicon glyphicon-edit"></a>
+    <a asp-action="Edit" asp-route-username="@Model.Username" class="btn btn-lg glyphicon glyphicon-edit"></a>
 }
 <div>
     @if (!string.IsNullOrEmpty(Model.Member.About))

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Portal.Persistance.Assets.Entities;
 using Portal.Persistance.Members.Entities;
 
@@ -17,12 +18,18 @@ namespace Portal.Persistance.Shared
         public DbSet<AssetTypeEntity> AssetTypes { get; set; }
         public DbSet<AssetEntity> Assets { get; set; }
         public DbSet<AssetTypePropertyEntity> AssetTypeProperties { get; set; }
-        public DbSet<AssetPropertyValueEntity> AssetPropertyValues { get; set; } 
+        public DbSet<AssetPropertyValueEntity> AssetPropertyValues { get; set; }
         #endregion
 
         public DatabaseService(DbContextOptions<DatabaseService> options)
             : base(options)
         {
+        }
+
+        public void DetachAllEntities()
+        {
+            foreach (var entity in this.ChangeTracker.Entries().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted))
+                Entry(entity.Entity).State = EntityState.Detached;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -55,7 +62,7 @@ namespace Portal.Persistance.Shared
 
             builder.Entity<AssetPropertyValueEntity>()
                 .HasKey(p => new { p.AssetEntityId, p.PropertyName });
-            builder.Entity<AssetPropertyValueEntity>().ForSqlServerToTable(name: "AssetPropertyValues", schema: "team"); 
+            builder.Entity<AssetPropertyValueEntity>().ForSqlServerToTable(name: "AssetPropertyValues", schema: "team");
             #endregion
 
             base.OnModelCreating(builder);
