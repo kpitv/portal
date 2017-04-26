@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Portal.Application.Assets.Commands.Models;
 using Portal.Application.Members.Commands.Models;
+using Portal.Domain.Assets;
+using Portal.Presentation.MVC.Assets.ViewModels;
 using Portal.Presentation.MVC.Members.ViewModels;
 
 namespace Portal.Presentation.Infrastructure
@@ -14,6 +17,9 @@ namespace Portal.Presentation.Infrastructure
             : base(profileName)
         {
             CreateMap<MemberViewModel, MemberModel>();
+            CreateMap<AssetTypeViewModel, CreateAssetTypeModel>();
+            CreateMap<AssetTypeViewModel, UpdateAssetTypeModel>();
+            CreateMap<AssetType, AssetTypeViewModel>();
         }
     }
 }

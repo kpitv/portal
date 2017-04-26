@@ -1,0 +1,26 @@
+﻿@model Portal.Presentation.MVC.Assets.ViewModels.AssetTypeViewModel
+
+<div id="editAssetTypeForm">
+    <h1>Edit @Model.Name</h1>
+    <form method="post" asp-antiforgery="true">
+        <input type="hidden" asp-for="Id" />
+        <div id="assetTypeName" class="form-group">
+            <label asp-for="Name">Name: </label>
+            <input asp-for="Name" class="form-control" />
+            <button type="button" class="btn btn-default editName glyphicon glyphicon-ok"></button>
+        </div>
+        <div id="assetTypeProperties" class="form-group">
+            <label>Properties: </label>
+            @foreach (var property in Model.Properties)
+            {
+                <div class="form-group">
+                    <input class="form-control" data-old-name="@property" value="@property" /> 
+                    <button type="button" class="btn btn-default renameProperty glyphicon glyphicon-ok"></button>
+                    <button type="button" class="btn btn-default removeProperty glyphicon glyphicon-remove"></button>
+                </div>
+            }
+        </div>
+        <button type="button" class="btn btn-default addProperty">Add Property</button>
+        <button type="button" id="editAssetType" class="btn btn-default">Save</button>
+    </form>
+</div>

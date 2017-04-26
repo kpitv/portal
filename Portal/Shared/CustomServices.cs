@@ -16,6 +16,10 @@ using Portal.Presentation.Identity.Data;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
 using System.Globalization;
+using Portal.Application.Assets.Commands;
+using Portal.Application.Assets.Queries;
+using Portal.Domain.Assets;
+using Portal.Persistance.Assets;
 
 namespace Portal.Shared
 {
@@ -30,6 +34,11 @@ namespace Portal.Shared
             services.AddScoped<IMemberFactory, MemberFactory>();
             services.AddScoped<IMemberQueries, MemberQueries>();
             services.AddScoped<IRepository<Member>, MemberRepository>();
+
+            services.AddScoped<IRepository<AssetType>, AssetRepository>();
+            services.AddScoped<IAssetTypeCommands, AssetTypeCommands>();
+            services.AddScoped<IAssetTypeQueries, AssetTypeQueries>();
+
             services.AddScoped<IEmailService, YandexEmailService>();
 
             #region Identity configuration

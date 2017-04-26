@@ -1,4 +1,13 @@
-﻿#assetTypeProperties input {
+﻿#editAssetTypeForm input {
     float: left;
     margin-right: 15px;
+}
+
+#createAssetTypeForm input {
+    float: left;
+    margin-right: 15px;
+}
+
+#createAssetTypeForm, #editAssetTypeForm {
+    width: 300px;
 }

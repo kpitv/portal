@@ -1,5 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model System.Collections.Generic.List<Portal.Domain.Assets.AssetType>
+
+<h1>Asset Types</h1>
+@foreach (var assetType in Model)
+{
+    <div>
+        <a href="/Assets/@assetType.Name">@assetType.Name</a>
+        <a href="/Assets/EditType/@assetType.Name">Edit</a>
+    </div>
 }
