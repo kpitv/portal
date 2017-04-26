@@ -1,8 +1,9 @@
-﻿#assetTypeProperties input {
+﻿#editAssetTypeForm input {
     float: left;
     margin-right: 15px;
 }
 
-.portal-form {
-    width: 300px;
+#createAssetTypeForm input {
+    float: left;
+    margin-right: 15px;
 }

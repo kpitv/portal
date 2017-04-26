@@ -46,12 +46,12 @@ namespace Portal.Application.Assets.Commands
             repository.Save();
         }
 
-        public void UpdateName(UpdateAssetTypeModel model)
+        public void UpdateName(string assetTypeId, string name)
         {
-            if (!Guid.TryParse(model.Id, out Guid assetTypeGuid))
+            if (!Guid.TryParse(assetTypeId, out Guid assetTypeGuid))
                 throw new ArgumentException("Invalid Id");
             var assetType = repository.Get(assetTypeGuid);
-            assetType.UpdateName(model.Name);
+            assetType.UpdateName(name);
             repository.Update(assetType);
             repository.Save();
         }

@@ -101,7 +101,8 @@ namespace Portal.Persistance.Shared
             var assetTypeEntity = new AssetTypeEntity
             {
                 Id = assetType.Id.ToString(),
-                Name = assetType.Name
+                Name = assetType.Name,
+                Properties = new List<AssetTypePropertyEntity>()
             };
 
             for (int i = 0; i < assetType.Properties.Count; i++)

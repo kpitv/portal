@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Portal.Application.Interfaces;
 using Portal.Application.Shared;
 using Portal.Domain.Assets;
@@ -19,13 +20,13 @@ namespace Portal.Persistance.Assets
 
         #region Queries
         public IEnumerable<AssetType> Find(Predicate<AssetType> predicate) =>
-            databaseService.AssetTypes.ToMappedCollection(EntityMapper.ToAssetType).Where(m => predicate(m));
+            databaseService.AssetTypes.Include(a => a.Properties).ToMappedCollection(EntityMapper.ToAssetType).Where(m => predicate(m));
 
         public AssetType Get(Guid id) =>
-            databaseService.AssetTypes.Single(a => a.Id == id.ToString()).ToAssetType();
+            databaseService.AssetTypes.AsNoTracking().Include(a => a.Properties).AsNoTracking().Single(a => a.Id == id.ToString()).ToAssetType();
 
         public IEnumerable<AssetType> GetAll() =>
-            databaseService.AssetTypes.ToMappedCollection(EntityMapper.ToAssetType);
+            databaseService.AssetTypes.Include(a => a.Properties).ToMappedCollection(EntityMapper.ToAssetType);
         #endregion
 
         #region Commands
