@@ -17,7 +17,7 @@ namespace Portal.Tests.UnitTests.Persistance
         {
             var id = Guid.NewGuid();
 
-            var member = new Member(
+            var member = Member.CreateWithId(
                id: id,
                userId: "ss",
                name: new MemberName(
@@ -27,7 +27,7 @@ namespace Portal.Tests.UnitTests.Persistance
                email: "ss@ss.ss",
                phones: new List<Phone> { new Phone("+380931234567"), new Phone("+380939379992") },
                roles: new List<Role> { Role.Copyrighter, Role.FilmEditor },
-               contactLinks: new Dictionary<ContactLink, string> { { ContactLink.Facebook, "ss" }, { ContactLink.Instagram, "ss" } },
+               contactLinks: new Dictionary<ContactLink, string> { { ContactLink.Facebook, "ss" }, { ContactLink.Instagram, "sy" } },
                about: "ss"
                );
 
@@ -47,7 +47,7 @@ namespace Portal.Tests.UnitTests.Persistance
                 Email = "ss@ss.ss",
                 Phones = new List<PhoneEntity> { new PhoneEntity { Number = "+380931234567" }, new PhoneEntity { Number = "+380939379992" } },
                 Roles = new List<RoleEntity> { new RoleEntity { Name = "Copyrighter" }, new RoleEntity { Name = "FilmEditor" } },
-                ContactLinks = new List<ContactLinkEntity> { new ContactLinkEntity { Contact = "Facebook", Link = "ss" }, new ContactLinkEntity { Contact = "Instagram", Link = "ss" } },
+                ContactLinks = new List<ContactLinkEntity> { new ContactLinkEntity { Contact = "Facebook", Link = "ss" }, new ContactLinkEntity { Contact = "Instagram", Link = "sy" } },
                 About = "ss"
             };
 
@@ -61,7 +61,7 @@ namespace Portal.Tests.UnitTests.Persistance
         {
             var id = Guid.NewGuid();
 
-            var member = new Member(
+            var member = Member.CreateWithId(
                id: id,
                userId: "ss",
                name: new MemberName(
@@ -71,7 +71,7 @@ namespace Portal.Tests.UnitTests.Persistance
                email: "ss@ss.ss",
                phones: new List<Phone> { new Phone("+380931234567"), new Phone("+380939379992") },
                roles: new List<Role> { Role.Copyrighter, Role.FilmEditor },
-               contactLinks: new Dictionary<ContactLink, string> { { ContactLink.Facebook, "ss" }, { ContactLink.Instagram, "ss" } },
+               contactLinks: new Dictionary<ContactLink, string> { { ContactLink.Facebook, "sy" }, { ContactLink.Instagram, "ss" } },
                about: "ss"
                );
 
@@ -91,7 +91,7 @@ namespace Portal.Tests.UnitTests.Persistance
                 Email = "ss@ss.ss",
                 Phones = new List<PhoneEntity> { new PhoneEntity { MemberId = id.ToString(), Number = "+380931234567" }, new PhoneEntity { MemberId = id.ToString(), Number = "+380939379992" } },
                 Roles = new List<RoleEntity> { new RoleEntity { MemberId = id.ToString(), Name = "Copyrighter" }, new RoleEntity { MemberId = id.ToString(), Name = "FilmEditor" } },
-                ContactLinks = new List<ContactLinkEntity> { new ContactLinkEntity { MemberId = id.ToString(), Contact = "Facebook", Link = "ss" }, new ContactLinkEntity { MemberId = id.ToString(), Contact = "Instagram", Link = "ss" } },
+                ContactLinks = new List<ContactLinkEntity> { new ContactLinkEntity { MemberId = id.ToString(), Contact = "Facebook", Link = "sy" }, new ContactLinkEntity { MemberId = id.ToString(), Contact = "Instagram", Link = "ss" } },
                 About = "ss"
             };
 
@@ -100,39 +100,131 @@ namespace Portal.Tests.UnitTests.Persistance
             memberEntity.ShouldBeEquivalentTo(newMemberEntity);
         }
 
-        //[Fact]
-        //public void ToAssetEntity_ShouldBeEqual()
-        //{
-        //    var id = Guid.NewGuid();
-        //    var assetTypeEntity = new AssetTypeEntity()
-        //    {
-        //        Id = Guid.NewGuid().ToString()
+        [Fact]
+        public void ToAssetEntity_ShouldBeEqual()
+        {
+            var id = Guid.NewGuid();
+            var assetTypeEntity = new AssetTypeEntity
+            {
+                Id = id.ToString(),
+                Name = "name",
+                Properties = new List<AssetTypePropertyEntity>
+                {
+                    new AssetTypePropertyEntity() { Name = "name", Index = 0, AssetTypeEntityId = id.ToString() },
+                    new AssetTypePropertyEntity() { Name = "model", Index = 1, AssetTypeEntityId = id.ToString() },
+                    new AssetTypePropertyEntity() { Name = "price", Index = 2, AssetTypeEntityId = id.ToString() }
+                }
+            };
+            var assetId = Guid.NewGuid();
+            var assetEntity = new AssetEntity()
+            {
+                Id = assetId.ToString(),
+                AssetTypeEntityId = assetTypeEntity.Id,
+                Values = new List<AssetPropertyValueEntity>
+                {
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 0,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "name",
+                        Value = "Musya"
+                    },
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 1,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "model",
+                        Value = "Pusya"
+                    },
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 2,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "price",
+                        Value = "Dusya"
+                    }
+                }
+            };
+            var assetType = AssetType.CreateWithId(id, "name", new List<string> { "name", "model", "price" });
+            var asset = Asset.CreateWithId(
+               id: assetId,
+               values: new List<string>() { "Musya", "Pusya", "Dusya" }
+               );
 
-        //    };
+            var newAssetEntity = asset.ToAssetEntity(assetType);
 
-        //    var asset = new Asset(
-        //       id: id,
-        //       values: new List<string>() { "Canon", "priceless", "60D" }
-        //       );
+            assetEntity.ShouldBeEquivalentTo(newAssetEntity);
+        }
 
-        //    var assetEntity = new AssetEntity()
-        //    {
-        //        Id = id.ToString(),
-        //        AssetType = assetTypeEntity,
-        //        AssetTypeEntityId = assetTypeEntity.Id,
-        //        Values = new List<AssetPropertyValueEntity>()
-        //    };
+        [Fact]
+        public void ToAsset_ShouldBeEqual()
+        {
+            var id = Guid.NewGuid();
+            var assetTypeEntity = new AssetTypeEntity
+            {
+                Id = id.ToString(),
+                Name = "name",
+                Properties = new List<AssetTypePropertyEntity>
+                {
+                    new AssetTypePropertyEntity() { Name = "name", Index = 0, AssetTypeEntityId = id.ToString() },
+                    new AssetTypePropertyEntity() { Name = "model", Index = 1, AssetTypeEntityId = id.ToString() },
+                    new AssetTypePropertyEntity() { Name = "price", Index = 2, AssetTypeEntityId = id.ToString() }
+                }
+            };
+            var assetId = Guid.NewGuid();
+            var assetEntity = new AssetEntity()
+            {
+                Id = assetId.ToString(),
+                AssetTypeEntityId = assetTypeEntity.Id,
+                Values = new List<AssetPropertyValueEntity>
+                {
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 0,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "name",
+                        Value = "Musya"
+                    },
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 1,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "model",
+                        Value = "Pusya"
+                    },
+                    new AssetPropertyValueEntity
+                    {
+                        AssetEntityId = assetId.ToString(),
+                        Index = 2,
+                        PropertyAssetTypeEntityId = id.ToString(),
+                        PropertyName = "price",
+                        Value = "Dusya"
+                    }
+                }
+            };
+            var assetType = AssetType.CreateWithId(id, "name", new List<string> { "name", "model", "price" });
+            var asset = Asset.CreateWithId(
+                id: assetId,
+                values: new List<string>() { "Musya", "Pusya", "Dusya" }
+            );
 
-        //    var newAssetEntity = asset.ToAssetEntity(assetType);
+            var newAsset = assetEntity.ToAsset();
 
-        //    assetEntity.ShouldBeEquivalentTo(newAssetEntity);
-        //}
+            asset.ShouldBeEquivalentTo(newAsset);
+        }
+
+
         [Fact]
         public void ToAssetType_ShouldBeEqual()
         {
             string id = Guid.NewGuid().ToString();
 
-            var assetType = new AssetType("name", new List<string> { "name", "model", "price" }, Guid.Parse(id));
+            var assetType = AssetType.CreateWithId(Guid.Parse(id), "name", new List<string> { "name", "model", "price" });
 
             var assetTypeEntity = new AssetTypeEntity()
             {
@@ -162,25 +254,19 @@ namespace Portal.Tests.UnitTests.Persistance
         {
             string id = Guid.NewGuid().ToString();
 
-            var assetType = new AssetType("name", new List<string> { "name", "model", "price" }, Guid.Parse(id));
+            var assetType = AssetType.CreateWithId(Guid.Parse(id), "name", new List<string> { "name", "model", "price" });
 
             var assetTypeEntity = new AssetTypeEntity()
             {
                 Id = id,
-                Name = "name"
+                Name = "name",
+                Properties = new List<AssetTypePropertyEntity>()
+                {
+                    new AssetTypePropertyEntity() { Name = "name" , Index = 0, AssetTypeEntityId = id },
+                    new AssetTypePropertyEntity() { Name = "model", Index = 1, AssetTypeEntityId = id },
+                    new AssetTypePropertyEntity() { Name = "price", Index = 2, AssetTypeEntityId = id }
+                }
             };
-
-            var properties = new List<AssetTypePropertyEntity>()
-            {
-                new AssetTypePropertyEntity() { Name = "name" },
-                new AssetTypePropertyEntity() { Name = "model" },
-                new AssetTypePropertyEntity() { Name = "price" }
-            };
-            properties.ForEach(p =>
-            {
-                p.AssetTypeEntityId = assetTypeEntity.Id;
-            });
-            assetTypeEntity.Properties = properties;
 
             var newAssetTypeEntity = assetType.ToAssetTypeEntity();
 

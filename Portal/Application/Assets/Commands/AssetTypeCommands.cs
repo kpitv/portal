@@ -39,9 +39,9 @@ namespace Portal.Application.Assets.Commands
                 !Guid.TryParse(model.Id, out Guid assetGuid))
                 throw new ArgumentException("Invalid Id");
             var assetType = repository.Get(assetTypeGuid);
-            assetType.RemoveAsset(new Asset(
-                model.Values,
-                assetGuid));
+            //assetType.RemoveAsset(new Asset(
+            //    model.Values,
+            //    assetGuid));
             repository.Update(assetType);
             repository.Save();
         }

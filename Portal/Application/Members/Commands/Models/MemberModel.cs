@@ -10,7 +10,6 @@ namespace Portal.Application.Members.Commands.Models
         public string FirstNameInEnglish { get; set; }
         public string FirstNameInRussian { get; set; }
         public string FirstNameInUkrainian { get; set; }
-        public string SecondNameInEnglish { get; set; }
         public string SecondNameInRussian { get; set; }
         public string SecondNameInUkrainian { get; set; }
         public string LastNameInEnglish { get; set; }

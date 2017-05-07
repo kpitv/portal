@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Portal.Domain.Members.Exceptions.Member;
 using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
 {
-    public sealed class Member : AggregateRoot, IDisposable
+    public sealed class Member : AggregateRoot
     {
         #region Properties
         public string UserId { get; }
@@ -13,42 +15,38 @@ namespace Portal.Domain.Members
         public string Email { get; private set; }
         public List<Phone> Phones { get; private set; }
         public List<Role> Roles { get; private set; }
-        // allow nulls
-        public Dictionary<ContactLink, string> ContactLinks { get; private set; }
+
+        // can be empty
         public string About { get; private set; }
+        public Dictionary<ContactLink, string> ContactLinks { get; private set; }
         #endregion
 
         #region Ctors
-        public Member(string userId, MemberName name, string email, List<Phone> phones,
-            List<Role> roles, Guid? id = null, string about = null, Dictionary<ContactLink, string> contactLinks = null)
+        public Member(string userId, MemberName name, string email, List<Phone> phones, List<Role> roles,
+            string about = null, Dictionary<ContactLink, string> contactLinks = null)
         {
-            if (id != Guid.Empty && id != null)
-                Id = (Guid)id;
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId))
-                throw new ArgumentNullException(nameof(userId));
-            if (email == null) throw new ArgumentNullException(nameof(email));
-            if (phones == null || phones.Count == 0) throw new ArgumentNullException(nameof(phones));
-            if (roles == null || roles.Count == 0) throw new ArgumentNullException(nameof(roles));
-            if (contactLinks?.Count == 0) contactLinks = null;
-
-            if (ValidateEmail(email))
-                Email = email;
-            else throw new ArgumentException(nameof(email));
-            if (about != null)
-                if (ValidateAbout(about))
-                    About = about;
-                else throw new ArgumentException(nameof(about));
-
-            UserId = userId;
+            UserId = !string.IsNullOrWhiteSpace(userId) ? userId : throw new InvalidUserIdException(userId);
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            Phones = phones;
-            About = about;
-            Roles = roles;
-            ContactLinks = contactLinks;
+            Email = ValidateEmail(email) ? email : throw new InvalidEmailException(email);
+            Phones = ValidatePhoneList(phones) ? phones : throw new InvalidPhoneListException(phones);
+            Roles = ValidateRoleList(roles) ? roles : throw new InvalidRoleListException(roles);
+
+            About = about != null ? (ValidateAbout(about) ? about : throw new InvalidAboutException(about)) : "";
+            ContactLinks = contactLinks != null
+                ? (ValidateContactLinks(contactLinks)
+                    ? contactLinks
+                    : throw new InvalidContactLinksException(contactLinks))
+                : new Dictionary<ContactLink, string>();
         }
         #endregion
 
         #region Methods
+
+        public static Member CreateWithId(Guid id, string userId, MemberName name, string email,
+            List<Phone> phones, List<Role> roles, string about = null,
+            Dictionary<ContactLink, string> contactLinks = null) =>
+                new Member(userId, name, email, phones, roles, about, contactLinks) { Id = id };
+
         public void Update(MemberName name = null, string email = null, List<Phone> phones = null,
             List<Role> roles = null, string about = null, Dictionary<ContactLink, string> contactLinks = null)
         {
@@ -76,15 +74,24 @@ namespace Portal.Domain.Members
             Roles = roles ?? Roles;
             ContactLinks = contactLinks ?? ContactLinks;
         }
-        public static bool ValidateEmail(string email) =>
-             Regex.IsMatch(email, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
-        public static bool ValidateAbout(string about, int maxLength = 500) =>
-             about.Length > 0 && about.Length <= maxLength;
-        #endregion
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public static bool ValidateEmail(string email) =>
+            Regex.IsMatch(email ?? "", @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
+
+        public static bool ValidateAbout(string about, int maxLength = 500) =>
+            !string.IsNullOrWhiteSpace(about) && about.Length <= maxLength;
+
+        public static bool ValidatePhoneList(List<Phone> phones) =>
+            phones != null && phones.Any() && !phones.Any(p => p is null) && phones.Distinct().Count() == phones.Count;
+
+        public static bool ValidateRoleList(List<Role> roles) =>
+            roles != null && roles.Any() && roles.Distinct().Count() == roles.Count;
+
+        public static bool ValidateContactLinks(Dictionary<ContactLink, string> contactLinks) =>
+            contactLinks != null &&
+            contactLinks.Count > 0 &&
+            !contactLinks.Values.Any(c => c is null) &&
+            contactLinks.Values.Distinct().Count() == contactLinks.Values.Count;
+        #endregion
     }
 }

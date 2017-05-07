@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Portal.Application.Interfaces;
@@ -19,8 +21,20 @@ namespace Portal.Persistance.Assets
         }
 
         #region Queries
-        public IEnumerable<AssetType> Find(Predicate<AssetType> predicate) =>
-            databaseService.AssetTypes.Include(a => a.Properties).ToMappedCollection(EntityMapper.ToAssetType).Where(m => predicate(m));
+
+        public IEnumerable<AssetType> Find(Predicate<AssetType> predicate)
+        {
+            try
+            {
+                return databaseService.AssetTypes.Include(a => a.Properties)
+                        .ToMappedCollection(EntityMapper.ToAssetType)
+                        .Where(m => predicate(m));
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException("Find", "AssetType");
+            }
+        }
 
         public AssetType Get(Guid id) =>
             databaseService.AssetTypes.AsNoTracking().Include(a => a.Properties).AsNoTracking().Single(a => a.Id == id.ToString()).ToAssetType();

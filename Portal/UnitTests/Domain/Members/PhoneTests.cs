@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
 using Portal.Domain.Members;
+using Portal.Domain.Shared;
 using Xunit;
 
 namespace Portal.Tests.UnitTests.Domain.Members
@@ -20,7 +21,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
         {
             var action = new Action(() => new Phone(number));
 
-            action.ShouldThrow<ArgumentException>();
+            action.ShouldThrow<DomainException<string>>();
         }
 
         [Fact]

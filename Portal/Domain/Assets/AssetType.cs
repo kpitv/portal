@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Portal.Domain.Assets.Exceptions;
 
 namespace Portal.Domain.Assets
 {
@@ -20,18 +21,18 @@ namespace Portal.Domain.Assets
         #endregion
 
         #region Ctors
-        public AssetType(string name, List<string> properties, Guid? id = null)
+        public AssetType(string name, List<string> properties)
         {
-            if (id != null)
-                Id = (Guid)id;
             Name = ValidateName(name, 50) ?
-                name : throw new ArgumentException("The name is invalid");
+                name : throw new InvalidAssetTypeNameException(name);
             Properties = ValidateProperties(properties) ?
-                properties : throw new ArgumentException("The properties are invalid");
+                properties : throw new InvalidPropertiesException(properties);
         }
         #endregion
 
         #region Methods
+        public static AssetType CreateWithId(Guid id, string name, List<string> properties) =>
+            new AssetType(name, properties) { Id = id };
 
         public void AddAsset(Asset asset)
         {
@@ -55,13 +56,13 @@ namespace Portal.Domain.Assets
         }
 
         public static bool ValidateName(string name, int maxLength) =>
-        !string.IsNullOrEmpty(name) &&
         !string.IsNullOrWhiteSpace(name) &&
         name.Length <= maxLength;
 
         public static bool ValidateProperties(List<string> properties) =>
+            properties != null &&
             properties.Count > 0 &&
-            !properties.GroupBy(n => n).Any(c => c.Count() > 1) &&
+            properties.Distinct().Count() == properties.Count &&
             properties.TrueForAll(a => ValidateName(a, 50));
 
         public void UpdateName(string newName)
@@ -73,9 +74,9 @@ namespace Portal.Domain.Assets
         public void RenameProperty(string name, string newName)
         {
             if (!Properties.Contains(name))
-                throw new ArgumentException("Specified property does not exist");
-            if (Properties.Contains(newName))
-                throw new ArgumentException("The property with new name already exists");
+                throw new PropertyNotFoundException(name);
+            if (Properties.Select(p => p.ToUpper()).Contains(newName.ToUpper()))
+                throw new InvalidPropertyException(newName, "The property with new name already exists");
 
             var newProperties = Properties.ToList();
             newProperties[Properties.ToList().IndexOf(name)] = newName;
@@ -85,7 +86,7 @@ namespace Portal.Domain.Assets
         public void MoveProperty(string name, int newIndex)
         {
             if (!Properties.Contains(name))
-                throw new ArgumentException("Specified property does not exist");
+                throw new PropertyNotFoundException(name);
             if (newIndex < 0 || newIndex >= Properties.Count)
                 throw new IndexOutOfRangeException();
 
@@ -114,8 +115,8 @@ namespace Portal.Domain.Assets
 
         public void AddProperty(string name, int index)
         {
-            if (Properties.Contains(name))
-                throw new ArgumentException("The property with the specified name already exists");
+            if (Properties.Select(p => p.ToUpper()).Contains(name.ToUpper()))
+                throw new InvalidPropertyException(name, "The property with specified name already exists");
             if (index < 0 || index > Properties.Count)
                 throw new IndexOutOfRangeException();
 
@@ -132,7 +133,7 @@ namespace Portal.Domain.Assets
         public void RemoveProperty(string name)
         {
             if (!Properties.Contains(name))
-                throw new ArgumentException("Specified property does not exist");
+                throw new PropertyNotFoundException(name);
 
             var newProperties = Properties.ToList();
             int propertyIndex = newProperties.IndexOf(name);

@@ -82,9 +82,9 @@ namespace Portal.Tests.UnitTests.Domain.Assets
         [Fact]
         public void ValidateProperties_ShouldThrowNullReferenceException()
         {
-            System.Action action = () => AssetType.ValidateProperties(null);
+            bool result =  AssetType.ValidateProperties(null);
 
-            action.ShouldThrow<System.NullReferenceException>();
+            result.Should().BeFalse();
         }
 
         [Fact]

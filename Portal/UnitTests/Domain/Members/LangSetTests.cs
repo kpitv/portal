@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Portal.Domain.Members;
+using Portal.Domain.Shared;
 using Xunit;
 
 namespace Portal.Tests.UnitTests.Domain.Members
@@ -11,11 +12,11 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [InlineData("Волянскёй", "Волянский", "Волянській")]
         [InlineData("Volyansky", "Vолянский", "Волянській")]
         [InlineData("Volyansky", "Волянский", "Vолянській")]
-        public void Ctor_IfNotCorrespondToLangShouldThrowException(string eng, string rus, string ukr)
+        public void Ctor_IfNotCorrespondToLangShouldThrowDomainException(string eng, string rus, string ukr)
         {
             Action action = () => new LangSet(eng, rus, ukr);
 
-            action.ShouldThrow<ArgumentException>();
+            action.ShouldThrow<DomainException<string>>();
         }
 
         [Fact]
@@ -105,7 +106,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
         public void Equals_ShouldBeEqual()
         {
             object obj1 = new LangSet("Hello!", "Привет!", "Вітаю!");
-            LangSet obj2 = new LangSet("Hello!", "Привет!", "Вітаю!");
+            var obj2 = new LangSet("Hello!", "Привет!", "Вітаю!");
 
             obj1.Should().Be(obj2);
         }

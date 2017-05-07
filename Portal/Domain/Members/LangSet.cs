@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using Portal.Domain.Members.Exceptions.LangSet;
 using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
@@ -16,15 +16,15 @@ namespace Portal.Domain.Members
         {
             if (CanBeEnglish(inEnglish))
                 InEnglish = inEnglish;
-            else throw new ArgumentException("Text is not English");
+            else throw new TextNotEnglishException(inEnglish);
 
             if (CanBeRussian(inRussian))
                 InRussian = inRussian;
-            else throw new ArgumentException("Text is not Russian");
+            else throw new TextNotRussianException(inRussian);
 
             if (CanBeUkrainian(inUkrainian))
                 InUkrainian = inUkrainian;
-            else throw new ArgumentException("Text is not Ukrainian");
+            else throw new TextNotUkrainianException(inUkrainian);
         }
 
         #region Methods

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Portal.Domain.Members.Exceptions.MemberName;
 using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
@@ -32,17 +33,14 @@ namespace Portal.Domain.Members
 
         public MemberName(LangSet firstName, LangSet secondName, LangSet lastName)
         {
-            if (Validate(firstName) && Validate(secondName) && Validate(lastName))
-            {
-                FirstName = firstName;
-                SecondName = secondName;
-                LastName = lastName;
-            }
-            else throw new ArgumentException("Invalid input");
+            FirstName = Validate(firstName) ? firstName : throw new InvalidFirstNameException(firstName);
+            SecondName = Validate(secondName) ? secondName : throw new InvalidSecondNameException(secondName);
+            LastName = Validate(lastName) ? lastName : throw new InvalidLastNameException(lastName);
         }
 
         #region Methods
         public static bool Validate(LangSet name) =>
+           name != null &&
            Regex.IsMatch(name.InEnglish, @"^[a-zA-Z\-']*$") &&
            Regex.IsMatch(name.InRussian, @"^[а-яА-яЁё\-']*$") &&
            Regex.IsMatch(name.InUkrainian, @"^[А-Ща-щЬЮЯьюяҐІЇЄґіїє\-']*$");

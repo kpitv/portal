@@ -8,22 +8,20 @@ namespace Portal.Domain.Assets
     public sealed class Asset : Entity
     {
         #region Properties
-        public IReadOnlyList<string> Values { get; private set; } 
+        public IReadOnlyList<string> Values { get; private set; }
         #endregion
 
         #region Ctors
-        public Asset(IReadOnlyList<string> values, Guid? id = null)
+        public Asset(IReadOnlyList<string> values)
         {
-            if (id != null)
-                Id = (Guid)id;
             Values = values;
-        } 
+        }
         #endregion
 
         #region EventHandlers
         public void OnPropertyMoved(object sender, AssetTypeEventArgs e)
         {
-            List<string> newValues = Values.ToList();
+            var newValues = Values.ToList();
             newValues.Insert(e.NewIndex, newValues[e.PropertyIndex]);
             newValues.RemoveAt(e.PropertyIndex + 1);
             Values = newValues;
@@ -45,6 +43,10 @@ namespace Portal.Domain.Assets
         #endregion
 
         #region Methods
+
+        public static Asset CreateWithId(Guid id, IReadOnlyList<string> values) =>
+            new Asset(values) { Id = id };
+
         public void Update(List<string> values)
         {
             Values = values;

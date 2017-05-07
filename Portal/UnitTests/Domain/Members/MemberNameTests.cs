@@ -40,7 +40,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
             memberName.FirstLastName.Should().Be(expectedName);
         }
 
-        public static IEnumerable<object[]> ValidateFalseData()
+        private static IEnumerable<object[]> ValidateFalseData()
         {
             yield return new object[] { new LangSet("1ssd", "Привет", "Привіт") };
             yield return new object[] { new LangSet("Hello", "/Привет", "Привіт") };
@@ -48,11 +48,12 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [Theory, MemberData(nameof(ValidateFalseData))]
         public void Validate_ShouldReturnFalse(LangSet name)
         {
-            var result = MemberName.Validate(name);
+            bool result = MemberName.Validate(name);
 
             result.Should().BeFalse();
         }
-        public static IEnumerable<object[]> ValidateTrueData()
+
+        private static IEnumerable<object[]> ValidateTrueData()
         {
             yield return new object[] { new LangSet("Hello", "Привет", "Привіт") };
             yield return new object[] { new LangSet("Hello", "Привет", "") };
@@ -61,7 +62,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [Theory, MemberData(nameof(ValidateTrueData))]
         public void Validate_ShouldReturnTrue(LangSet name)
         {
-            var result = MemberName.Validate(name);
+            bool result = MemberName.Validate(name);
 
             result.Should().BeTrue();
         }
@@ -69,7 +70,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [Fact]
         public void Update_ShouldNotBeEqual()
         {
-            string rusSecondName = "";
+            const string rusSecondName = "";
             var obj = new MemberName(
                 new LangSet("Hello", "Привет", "Привіт"),
                 new LangSet("Hello", "Привето", "Привіто"),
@@ -89,7 +90,7 @@ namespace Portal.Tests.UnitTests.Domain.Members
         [Fact]
         public void Update_ShouldBeEqual()
         {
-            string rusSecondName = "Бычевич";
+            const string rusSecondName = "Бычевич";
             var obj = new MemberName(
                 new LangSet("Hello", "Привет", "Привіт"),
                 new LangSet("Hello", "Привето", "Привіто"),

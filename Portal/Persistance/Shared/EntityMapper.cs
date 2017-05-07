@@ -13,7 +13,7 @@ namespace Portal.Persistance.Shared
     {
         #region Member
         public static Member ToMember(this MemberEntity memberEntity) =>
-           new Member(
+           Member.CreateWithId(
                 id: Guid.Parse(memberEntity.Id),
                 userId: memberEntity.UserId,
                 name: new MemberName(
@@ -43,7 +43,7 @@ namespace Portal.Persistance.Shared
             {
                 Id = member.Id.ToString(),
                 UserId = member.UserId,
-                FirstNameInEnglish = member.Name.FirstName.InEnglish,   
+                FirstNameInEnglish = member.Name.FirstName.InEnglish,
                 FirstNameInRussian = member.Name.FirstName.InRussian,
                 FirstNameInUkrainian = member.Name.FirstName.InUkrainian,
                 SecondNameInEnglish = member.Name.SecondName.InEnglish,
@@ -58,10 +58,6 @@ namespace Portal.Persistance.Shared
                 ContactLinks = member.ContactLinks?.ToContactLinkEntities(member.Id.ToString()),
                 About = member.About
             };
-            foreach (var role in entity.Roles)
-            {
-                role.Member = entity;
-            }
             return entity;
         }
 
@@ -84,14 +80,14 @@ namespace Portal.Persistance.Shared
 
         #region Asset
         public static AssetType ToAssetType(this AssetTypeEntity assetTypeEntity) =>
-            new AssetType(
+            AssetType.CreateWithId(
                 id: Guid.Parse(assetTypeEntity.Id),
                 name: assetTypeEntity.Name,
                 properties: assetTypeEntity.Properties.OrderBy(p => p.Index).Select(p => p.Name).ToList()
                 );
 
         public static Asset ToAsset(this AssetEntity assetEntity) =>
-            new Asset(
+            Asset.CreateWithId(
                 id: Guid.Parse(assetEntity.Id),
                 values: assetEntity.Values.OrderBy(v => v.Index).Select(v => v.Value).ToList()
                 );
@@ -108,7 +104,7 @@ namespace Portal.Persistance.Shared
             for (int i = 0; i < assetType.Properties.Count; i++)
                 assetTypeEntity.Properties.Add(assetType.Properties[i]
                     .ToAssetTypePropertyEntity(assetType.Id.ToString(), i));
-            
+
             return assetTypeEntity;
         }
 
@@ -119,14 +115,13 @@ namespace Portal.Persistance.Shared
                 Id = asset.Id.ToString(),
                 AssetTypeEntityId = assetType.Id.ToString(),
                 Values = asset.Values.Select((t, i) => new AssetPropertyValueEntity
-                    {
-                        AssetEntityId = asset.Id.ToString(),
-                        Value = t,
-                        PropertyName = assetType.Properties[i],
-                        PropertyAssetTypeEntityId = assetType.Id.ToString(),
-                        Index = i
-                    })
-                    .ToList()
+                {
+                    AssetEntityId = asset.Id.ToString(),
+                    Value = t,
+                    PropertyName = assetType.Properties[i],
+                    PropertyAssetTypeEntityId = assetType.Id.ToString(),
+                    Index = i
+                }).ToList()
             };
         }
 

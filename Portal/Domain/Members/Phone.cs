@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Portal.Domain.Members.Exceptions.Phone;
 using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members
@@ -46,12 +47,14 @@ namespace Portal.Domain.Members
 
         public Phone(string number)
         {
+            if (number is null) throw new NullReferenceException();
+
             if (Regex.IsMatch(number, @"^\+380\d{9}$"))
             {
                 OperatorCode = number.Substring(4, 2);
                 Number = number;
             }
-            else throw new ArgumentException("Invalid number. Use pattern: +380XXYYYYYYY");
+            else throw new InvalidPhoneException(number);
         }
 
         #region Methods

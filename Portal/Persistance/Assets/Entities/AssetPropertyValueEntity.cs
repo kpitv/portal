@@ -8,7 +8,6 @@ namespace Portal.Persistance.Assets.Entities
     public class AssetPropertyValueEntity
     {
         public string Value { get; set; }
-      //  [ForeignKey("FK_AssetPropertyValues_AssetTypeProperties_PropertyName_PropertyAssetTypeEntityId")]
         public string PropertyName { get; set; }
         public string PropertyAssetTypeEntityId { get; set; }
         public AssetTypePropertyEntity Property { get; set; }

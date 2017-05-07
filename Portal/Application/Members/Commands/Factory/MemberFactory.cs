@@ -28,7 +28,7 @@ namespace Portal.Application.Members.Commands.Factory
                     throw new ArgumentException($"Role \"{role}\" is not available");
             }
 
-            var member = new Member(model.UserId, memberName, model.Email, phones, roles, memberId);
+            var member = Member.CreateWithId(memberId, model.UserId, memberName, model.Email, phones, roles);
 
             if (model.ContactLinks.Any())
             {
