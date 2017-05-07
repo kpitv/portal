@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Portal.Application.Interfaces;
@@ -32,36 +30,87 @@ namespace Portal.Persistance.Assets
             }
             catch (Exception)
             {
-                throw new PersistanceException("Find", "AssetType");
+                throw new PersistanceException(nameof(Find), nameof(AssetType));
             }
         }
 
-        public AssetType Get(Guid id) =>
-            databaseService.AssetTypes.AsNoTracking().Include(a => a.Properties).AsNoTracking().Single(a => a.Id == id.ToString()).ToAssetType();
+        public AssetType Get(Guid id)
+        {
+            try
+            {
+                return databaseService.AssetTypes.AsNoTracking()
+                         .Include(a => a.Properties)
+                         .AsNoTracking()
+                         .Single(a => a.Id == id.ToString())
+                         .ToAssetType();
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(Get), nameof(AssetType));
+            }
+        }
 
-        public IEnumerable<AssetType> GetAll() =>
-            databaseService.AssetTypes.Include(a => a.Properties).ToMappedCollection(EntityMapper.ToAssetType);
+        public IEnumerable<AssetType> GetAll()
+        {
+            try
+            {
+                return databaseService.AssetTypes.Include(a => a.Properties).ToMappedCollection(EntityMapper.ToAssetType);
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(GetAll), nameof(AssetType));
+            }
+        }
+
         #endregion
 
         #region Commands
         public void Create(AssetType aggregateRoot)
         {
-            databaseService.AssetTypes.Add(aggregateRoot.ToAssetTypeEntity());
+            try
+            {
+                databaseService.AssetTypes.Add(aggregateRoot.ToAssetTypeEntity());
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(Create), nameof(AssetType));
+            }
         }
 
         public void Update(AssetType aggregateRoot)
         {
-            databaseService.AssetTypes.Update(aggregateRoot.ToAssetTypeEntity());
+            try
+            {
+                databaseService.AssetTypes.Update(aggregateRoot.ToAssetTypeEntity());
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(Update), nameof(AssetType));
+            }
         }
 
         public void Delete(Guid id)
         {
-            databaseService.AssetTypes.Remove(databaseService.AssetTypes.Single(a => a.Id == id.ToString()));
+            try
+            {
+                databaseService.AssetTypes.Remove(databaseService.AssetTypes.Single(a => a.Id == id.ToString()));
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(Delete), nameof(AssetType));
+            }
         }
 
         public void Save()
         {
-            databaseService.SaveChanges();
+            try
+            {
+                databaseService.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new PersistanceException(nameof(Save), nameof(AssetType), isStorageException: true);
+            }
         }
 
         public void DetachAllEntities()
