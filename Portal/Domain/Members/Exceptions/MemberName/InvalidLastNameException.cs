@@ -2,9 +2,9 @@
 
 namespace Portal.Domain.Members.Exceptions.MemberName
 {
-    public class InvalidLastNameException : DomainException<Members.LangSet>
+    public class InvalidLastNameException : DomainException
     {
-        public InvalidLastNameException(Members.LangSet invalidValue) : base(invalidValue) { }
+        public InvalidLastNameException(string name) : base(name) { }
     }
 }
 

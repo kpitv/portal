@@ -61,7 +61,7 @@ namespace Portal.Presentation
                 app.UseBrowserLink();
 
                 //identityManager.InitializeUsersAsync();
-                //identityManager.InviteUser("stas.sphere@gmail.com");
+                identityManager.InviteUser("stas.sphere@gmail.com");
             }
 
             var supportedCultures = new List<CultureInfo>()

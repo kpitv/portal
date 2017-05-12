@@ -2,18 +2,20 @@
 
 namespace Portal.Domain.Shared
 {
-    public class DomainException<T> : Exception
+    public class DomainException : Exception
     {
-        public T InvalidValue { get; }
+        public string Name { get; }
+        public string Field { get; }
 
-        public DomainException(T invalidValue)
+        protected DomainException(string name)
         {
-            InvalidValue = invalidValue;
+            Name = name;
         }
 
-        public DomainException(T invalidValue, string message) : base(message)
+        protected DomainException(string name, string message, string field) : base(message)
         {
-            InvalidValue = invalidValue;
+            Name = name;
+            Field = field;
         }
     }
 }

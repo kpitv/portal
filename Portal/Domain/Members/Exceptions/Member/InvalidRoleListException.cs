@@ -3,8 +3,8 @@ using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members.Exceptions.Member
 {
-    public class InvalidRoleListException : DomainException<List<Role>>
+    public class InvalidRoleListException : DomainException
     {
-        public InvalidRoleListException(List<Role> invalidValue) : base(invalidValue) { }
+        public InvalidRoleListException(string name) : base(name) { }
     }
 }

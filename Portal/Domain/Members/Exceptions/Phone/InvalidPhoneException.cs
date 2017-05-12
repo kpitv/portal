@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.Phone
 {
-    public class InvalidPhoneException : DomainException<string>
+    public class InvalidPhoneException : DomainException
     {
-        public InvalidPhoneException(string invalidValue) : base(invalidValue) { }
+        public InvalidPhoneException(string name) : base(name) { }
     }
 }

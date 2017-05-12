@@ -3,8 +3,8 @@ using Portal.Domain.Shared;
 
 namespace Portal.Domain.Members.Exceptions.Member
 {
-    public class InvalidContactLinksException : DomainException<Dictionary<ContactLink, string>>
+    public class InvalidContactLinksException : DomainException
     {
-        public InvalidContactLinksException(Dictionary<ContactLink, string> invalidValue) : base(invalidValue) { }
+        public InvalidContactLinksException(string name) : base(name) { }
     }
 }

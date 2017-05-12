@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Portal.Presentation.MVC.Users.ViewModels
 {
@@ -10,5 +7,6 @@ namespace Portal.Presentation.MVC.Users.ViewModels
         public bool IsLogedIn { get; set; }
         public string DisplayName { get; set; }
         public string Username { get; set; }
+        public Dictionary<string,string> Errors { get; set; }
     }
 }

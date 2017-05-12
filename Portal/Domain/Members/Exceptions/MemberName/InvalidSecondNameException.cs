@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.MemberName
 {
-    public class InvalidSecondNameException : DomainException<Members.LangSet>
+    public class InvalidSecondNameException : DomainException
     {
-        public InvalidSecondNameException(Members.LangSet invalidValue) : base(invalidValue) { }
+        public InvalidSecondNameException(string name) : base(name) { }
     }
 }

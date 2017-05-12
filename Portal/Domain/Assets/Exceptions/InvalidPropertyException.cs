@@ -2,11 +2,11 @@
 
 namespace Portal.Domain.Assets.Exceptions
 {
-    public class InvalidPropertyException : DomainException<string>
+    public class InvalidPropertyException : DomainException
     {
-        public InvalidPropertyException(string invalidValue) : base(invalidValue) { }
+        public InvalidPropertyException(string name) : base(name) { }
 
-        public InvalidPropertyException(string invalidValue, string message) : base(invalidValue, message) { }
+        public InvalidPropertyException(string name, string message) : base(name, message, "") { }
     }
 }
 

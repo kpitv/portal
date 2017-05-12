@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Portal.Domain.Shared;
+﻿using Portal.Domain.Shared;
 
 namespace Portal.Domain.Assets.Exceptions
 {
-    public class PropertyNotFoundException : DomainException<string>
+    public class PropertyNotFoundException : DomainException
     {
-        public PropertyNotFoundException(string invalidValue) : base(invalidValue) { }
+        public PropertyNotFoundException(string name) : base(name) { }
     }
 }
 

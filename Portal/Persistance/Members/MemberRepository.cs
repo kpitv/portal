@@ -115,7 +115,7 @@ namespace Portal.Persistance.Members
             }
             catch (Exception)
             {
-                throw new PersistanceException(nameof(Save), nameof(Member), true);
+                throw new PersistanceException(nameof(Save), nameof(Member), isStorageException: true);
             }
         }
 

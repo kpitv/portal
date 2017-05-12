@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Portal.Application.Errors;
 using Portal.Application.Members.Commands.Models;
 using Portal.Domain.Members;
+using static Portal.Application.Errors.ApplicationError;
 
 namespace Portal.Application.Members.Commands.Factory
 {
     public class MemberFactory : IMemberFactory
     {
+        private readonly ErrorService error;
+        public MemberFactory(ErrorService error)
+        {
+            this.error = error;
+        }
+
         public Member Create(MemberModel model, string id = null)
         {
+            var state = true;
+
             if (!Guid.TryParse(id, out Guid memberId) && id != null)
                 throw new ArgumentException("Invalid id");
 
@@ -25,10 +35,16 @@ namespace Portal.Application.Members.Commands.Factory
                 if (Enum.TryParse(role, true, out Role result))
                     roles.Add(result);
                 else
-                    throw new ArgumentException($"Role \"{role}\" is not available");
+                {
+                    error.Raise(this, new ErrorEventArgs(InvalidMemberRole, "Roles"));
+                    state = false;
+                    break;
+                }
             }
 
-            var member = Member.CreateWithId(memberId, model.UserId, memberName, model.Email, phones, roles);
+            var member = id is null
+                ? new Member(model.UserId, memberName, model.Email, phones, roles)
+                : Member.CreateWithId(memberId, model.UserId, memberName, model.Email, phones, roles);
 
             if (model.ContactLinks.Any())
             {
@@ -38,13 +54,19 @@ namespace Portal.Application.Members.Commands.Factory
                     if (Enum.TryParse(contact.Key, true, out ContactLink result))
                         contactLinks.Add(result, contact.Value);
                     else
-                        throw new ArgumentException($"Contact link \"{contact.Key}\" is not available");
+                    {
+                        error.Raise(this, new ErrorEventArgs(InvalidMemberContactLink, "ContactLinks"));
+                        state = false;
+                    }
                 }
                 member.Update(contactLinks: contactLinks);
             }
 
             if (!string.IsNullOrEmpty(model.About))
                 member.Update(about: model.About);
+
+            if (!state)
+                throw new ArgumentException();
 
             return member;
         }

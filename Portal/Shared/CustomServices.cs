@@ -15,9 +15,9 @@ using Portal.Persistance.Shared;
 using Portal.Presentation.Identity.Data;
 using Portal.Presentation.Identity.Users;
 using Portal.Presentation.Identity.Users.Models;
-using System.Globalization;
 using Portal.Application.Assets.Commands;
 using Portal.Application.Assets.Queries;
+using Portal.Application.Errors;
 using Portal.Domain.Assets;
 using Portal.Persistance.Assets;
 
@@ -40,6 +40,8 @@ namespace Portal.Shared
             services.AddScoped<IAssetTypeQueries, AssetTypeQueries>();
 
             services.AddScoped<IEmailService, YandexEmailService>();
+            services.AddScoped<IValidationService, ValidationService>();
+            services.AddScoped<ErrorService>();
 
             #region Identity configuration
             services.AddDbContext<IdentityDatabaseService>(options =>

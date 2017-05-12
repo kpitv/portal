@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Assets.Exceptions
 {
-    public class InvalidAssetTypeNameException : DomainException<string>
+    public class InvalidAssetTypeNameException : DomainException
     {
-        public InvalidAssetTypeNameException(string invalidValue) : base(invalidValue) { }
+        public InvalidAssetTypeNameException(string name) : base(name) { }
     }
 }

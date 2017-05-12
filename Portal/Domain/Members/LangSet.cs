@@ -16,15 +16,15 @@ namespace Portal.Domain.Members
         {
             if (CanBeEnglish(inEnglish))
                 InEnglish = inEnglish;
-            else throw new TextNotEnglishException(inEnglish);
+            else throw new TextNotEnglishException(nameof(TextNotEnglishException));
 
             if (CanBeRussian(inRussian))
                 InRussian = inRussian;
-            else throw new TextNotRussianException(inRussian);
+            else throw new TextNotRussianException(nameof(TextNotRussianException));
 
             if (CanBeUkrainian(inUkrainian))
                 InUkrainian = inUkrainian;
-            else throw new TextNotUkrainianException(inUkrainian);
+            else throw new TextNotUkrainianException(nameof(TextNotUkrainianException));
         }
 
         #region Methods

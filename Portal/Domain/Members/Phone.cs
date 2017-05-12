@@ -54,7 +54,7 @@ namespace Portal.Domain.Members
                 OperatorCode = number.Substring(4, 2);
                 Number = number;
             }
-            else throw new InvalidPhoneException(number);
+            else throw new InvalidPhoneException(nameof(InvalidPhoneException));
         }
 
         #region Methods

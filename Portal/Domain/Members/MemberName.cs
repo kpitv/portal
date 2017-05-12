@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Portal.Domain.Members.Exceptions.MemberName;
 using Portal.Domain.Shared;
 
@@ -33,9 +32,9 @@ namespace Portal.Domain.Members
 
         public MemberName(LangSet firstName, LangSet secondName, LangSet lastName)
         {
-            FirstName = Validate(firstName) ? firstName : throw new InvalidFirstNameException(firstName);
-            SecondName = Validate(secondName) ? secondName : throw new InvalidSecondNameException(secondName);
-            LastName = Validate(lastName) ? lastName : throw new InvalidLastNameException(lastName);
+            FirstName = Validate(firstName) ? firstName : throw new InvalidFirstNameException(nameof(InvalidFirstNameException));
+            SecondName = Validate(secondName) ? secondName : throw new InvalidSecondNameException(nameof(InvalidFirstNameException));
+            LastName = Validate(lastName) ? lastName : throw new InvalidLastNameException(nameof(InvalidFirstNameException));
         }
 
         #region Methods

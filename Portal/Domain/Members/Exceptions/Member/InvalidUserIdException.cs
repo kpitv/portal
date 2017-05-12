@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.Member
 {
-    public class InvalidUserIdException : DomainException<string>
+    public class InvalidUserIdException : DomainException
     {
-        public InvalidUserIdException(string invalidValue) : base(invalidValue) { }
+        public InvalidUserIdException(string name) : base(name) { }
     }
 }

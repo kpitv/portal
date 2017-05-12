@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.LangSet
 {
-    public class TextNotUkrainianException : DomainException<string>
+    public class TextNotUkrainianException : DomainException
     {
-        public TextNotUkrainianException(string invalidValue) : base(invalidValue) { }
+        public TextNotUkrainianException(string name) : base(name) { }
     }
 }

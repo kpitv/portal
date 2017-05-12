@@ -2,9 +2,9 @@
 
 namespace Portal.Domain.Members.Exceptions.LangSet
 {
-    public class TextNotEnglishException : DomainException<string>
+    public class TextNotEnglishException : DomainException
     {
-        public TextNotEnglishException(string invalidValue) : base(invalidValue) { }
+        public TextNotEnglishException(string name) : base(name) { }
     }
 }
 

@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.Member
 {
-    public class InvalidEmailException : DomainException<string>
+    public class InvalidEmailException : DomainException
     {
-        public InvalidEmailException(string invalidValue) : base(invalidValue) { }
+        public InvalidEmailException(string name) : base(name) { }
     }
 }

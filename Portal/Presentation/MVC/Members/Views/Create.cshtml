@@ -1,6 +1,7 @@
 ﻿@using Portal.Presentation.MVC.Members
 @model Portal.Presentation.MVC.Members.ViewModels.MemberViewModel
 
+<div id="formContainer"></div>
 <form asp-action="@nameof(MembersController.Create)" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="col-md-6">
@@ -56,38 +57,55 @@
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="PhoneNumber">@L["Phone number"]: </label>
-            <input asp-for="PhoneNumber" class="form-control" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        <div id="phoneNumbers" class="form-group">
+            <label>@L["Phone number"]: </label>
+            <div>
+                <div class="form-group">
+                    <input type="tel" name="PhoneNumber" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+                <div id="removeNumberInputButton" class="btn glyphicon glyphicon-minus"></div>
+            </div>
+            <div id="addNumberInputButton" class="btn glyphicon glyphicon-plus"></div>
         </div>
-        <h4 class="h4">@L["Your role"]:</h4>
-        @foreach (string role in Model.Roles)
-        {
-            <div class="form-group col-md-4">
-                <input asp-for="SelectedRole" class="radio-inline" type="radio" value="@role" /> @role
-            </div>
-        }
-        <h4 class="h4">@L["Other contacts"]:</h4>
-        @foreach (var link in Model.ContactLinks)
-        {
-            if (link.Key == "Twitter")
+        <div id="roles" class="form-group">
+            <label>@L["Your role"]: </label>
+            @foreach (var role in Model.Roles)
             {
-                break;
+                string check = role.Value ? "checked" : string.Empty;
+                <div>
+                    <input type="checkbox" data-role="@role.Key" class="checkbox-inline" @check />
+                    <label>@role.Key</label>
+                </div>
             }
-            <div class="form-group">
-                <label>@link.Key</label>
-                <input name="@link.Key" class="form-control" />
-                <span asp-validation-for="@link.Key" class="text-danger"></span>
-            </div>
-        }
+        </div>
+
+        <div id="contactLinks" class="form-group">
+            <label>@L["Other contacts"]:</label>
+            @foreach (var link in Model.ContactLinks)
+            {
+                <div class="form-group">
+                    <label>@link.Key</label>
+                    <input type="url" name="@link.Key" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+            }
+        </div>
         <div class="form-group">
             <label asp-for="About"></label>
             <textarea asp-for="About" class="form-control"></textarea>
-            <span asp-validation-for="About" class="text-danger"></span>
+            <span asp-validation-for="About" class="text-danger">
+                @Model.Errors.FirstOrDefault(e => e.Key == "About")?.ToList()[0];
+            </span>
         </div>
     </div>
-    <div class="form-group col-md-2 button-submit">
-        <button class="btn btn-primary" type="submit">@L["Ok"]</button>
+    <div class="form-group col-md-2">
+        <button class="btn btn-primary" id="submitMemberForm" type="submit">@L["Ok"]</button>
     </div>
 </form>
+
+@section scripts
+{
+    <script src="/js/members/member.js"></script>
+}
+

@@ -2,8 +2,8 @@
 
 namespace Portal.Domain.Members.Exceptions.Member
 {
-    public class InvalidAboutException : DomainException<string>
+    public class InvalidAboutException : DomainException
     {
-        public InvalidAboutException(string invalidValue) : base(invalidValue) { }
+        public InvalidAboutException(string name) : base(name) { }
     }
 }

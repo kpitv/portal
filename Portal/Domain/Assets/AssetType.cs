@@ -24,9 +24,9 @@ namespace Portal.Domain.Assets
         public AssetType(string name, List<string> properties)
         {
             Name = ValidateName(name, 50) ?
-                name : throw new InvalidAssetTypeNameException(name);
+                name : throw new InvalidAssetTypeNameException(nameof(InvalidAssetTypeNameException));
             Properties = ValidateProperties(properties) ?
-                properties : throw new InvalidPropertiesException(properties);
+                properties : throw new InvalidPropertiesException(nameof(InvalidPropertiesException));
         }
         #endregion
 
@@ -37,7 +37,7 @@ namespace Portal.Domain.Assets
         public void AddAsset(Asset asset)
         {
             if (asset.Values.Count != Properties.Count)
-                throw new ArgumentException("Numbers of properties in asset type and values in asset should be equal");
+                throw new InvalidValuesCountException(nameof(InvalidValuesCountException));
 
             PropertyMoved += asset.OnPropertyMoved;
             PropertyAdded += asset.OnPropertyAdded;
@@ -56,8 +56,8 @@ namespace Portal.Domain.Assets
         }
 
         public static bool ValidateName(string name, int maxLength) =>
-        !string.IsNullOrWhiteSpace(name) &&
-        name.Length <= maxLength;
+            !string.IsNullOrWhiteSpace(name) &&
+            name.Length <= maxLength;
 
         public static bool ValidateProperties(List<string> properties) =>
             properties != null &&
@@ -68,15 +68,15 @@ namespace Portal.Domain.Assets
         public void UpdateName(string newName)
         {
             Name = ValidateName(newName, 50) ?
-              newName : throw new ArgumentException("The name is invalid");
+              newName : throw new InvalidAssetTypeNameException(nameof(InvalidAssetTypeNameException));
         }
 
         public void RenameProperty(string name, string newName)
         {
             if (!Properties.Contains(name))
-                throw new PropertyNotFoundException(name);
+                throw new PropertyNotFoundException(nameof(PropertyNotFoundException));
             if (Properties.Select(p => p.ToUpper()).Contains(newName.ToUpper()))
-                throw new InvalidPropertyException(newName, "The property with new name already exists");
+                throw new InvalidPropertyException(nameof(InvalidPropertyException), "The property with new name already exists");
 
             var newProperties = Properties.ToList();
             newProperties[Properties.ToList().IndexOf(name)] = newName;
@@ -86,9 +86,9 @@ namespace Portal.Domain.Assets
         public void MoveProperty(string name, int newIndex)
         {
             if (!Properties.Contains(name))
-                throw new PropertyNotFoundException(name);
+                throw new PropertyNotFoundException(nameof(PropertyNotFoundException));
             if (newIndex < 0 || newIndex >= Properties.Count)
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException(nameof(IndexOutOfRangeException));
 
             var newProperties = Properties.ToList();
 
@@ -116,9 +116,9 @@ namespace Portal.Domain.Assets
         public void AddProperty(string name, int index)
         {
             if (Properties.Select(p => p.ToUpper()).Contains(name.ToUpper()))
-                throw new InvalidPropertyException(name, "The property with specified name already exists");
+                throw new InvalidPropertyException(nameof(InvalidPropertyException), "The property with specified name already exists");
             if (index < 0 || index > Properties.Count)
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException(nameof(IndexOutOfRangeException));
 
             var newProperties = Properties.ToList();
             newProperties.Insert(index, name);
@@ -133,7 +133,7 @@ namespace Portal.Domain.Assets
         public void RemoveProperty(string name)
         {
             if (!Properties.Contains(name))
-                throw new PropertyNotFoundException(name);
+                throw new PropertyNotFoundException(nameof(PropertyNotFoundException));
 
             var newProperties = Properties.ToList();
             int propertyIndex = newProperties.IndexOf(name);
