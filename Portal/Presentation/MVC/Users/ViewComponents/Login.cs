@@ -21,12 +21,12 @@ namespace Portal.Presentation.MVC.Users.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var user = await manager.User.GetUserAsync(HttpContext.User);
-            if (user == null) return View(new LoginViewModel { IsLogedIn = false });
+            if (user == null) return View(new LoginViewModel { IsLoggedIn = false });
             var member = queries.FindMembers(m => m.UserId == user.Id).FirstOrDefault();
             string name = member is null ? user.UserName : member.Name.FirstName.InEnglish;
             return View(new LoginViewModel
             {
-                IsLogedIn = true,
+                IsLoggedIn = true,
                 Username = user.UserName,
                 DisplayName = name
             });

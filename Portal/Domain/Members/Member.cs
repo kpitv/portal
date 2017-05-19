@@ -63,22 +63,22 @@ namespace Portal.Domain.Members
                 ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidMemberEmail, nameof(Email)));
                 state = false;
             }
-            if (phones != null && phones.Any() && phones.Distinct().Count() == phones.Count)
+            if (phones != null && !(phones.Any() && phones.Distinct().Count() == phones.Count))
             {
                 ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidMemberPhoneList, nameof(Phones)));
                 state = false;
             }
-            if (roles != null && roles.Any() && roles.Distinct().Count() == roles.Count)
+            if (roles != null && !(roles.Any() && roles.Distinct().Count() == roles.Count))
             {
                 ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidMemberRoleList, nameof(Roles)));
                 state = false;
             }
-            if (ValidateAbout(about))
+            if (about != null && !ValidateAbout(about))
             {
                 ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidMemberAbout, nameof(About)));
                 state = false;
             }
-            if (contactLinks != null && contactLinks.Count > 0 && contactLinks.Values.Distinct().Count() == contactLinks.Values.Count())
+            if (contactLinks != null && !(contactLinks.Any() && contactLinks.Values.Distinct().Count() == contactLinks.Values.Count()))
             {
                 ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidMemberContactLinks, nameof(ContactLinks)));
                 state = false;
@@ -86,10 +86,10 @@ namespace Portal.Domain.Members
             return state;
         }
 
-        public static Member CreateWithId(Guid id, string userId, MemberName name, string email,
+        public static Member CreateWithId(string id, string userId, MemberName name, string email,
             List<Phone> phones, List<Role> roles, string about = null,
             Dictionary<ContactLink, string> contactLinks = null) =>
-                new Member(userId, name, email, phones, roles, about, contactLinks) { Id = id };
+                new Member(userId, name, email, phones, roles, about, contactLinks) { Id = Guid.Parse(id) };
 
         public void Update(MemberName name = null, string email = null, List<Phone> phones = null,
             List<Role> roles = null, string about = null, Dictionary<ContactLink, string> contactLinks = null)

@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Domain.Members;
 
-
 namespace Portal.Presentation.MVC.Members.ViewModels
 {
     public class MemberViewModel
@@ -15,9 +14,6 @@ namespace Portal.Presentation.MVC.Members.ViewModels
 
         [HiddenInput]
         public string Id { get; set; }
-
-        [HiddenInput]
-        public string Username { get; set; }
 
         #region MemberName
         [Required]

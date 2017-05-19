@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Presentation.MVC.Assets.ViewModels;
@@ -5,6 +6,7 @@ using AutoMapper;
 using Portal.Application.Assets.Commands;
 using Portal.Application.Assets.Commands.Models;
 using Portal.Application.Assets.Queries;
+using Portal.Application.Shared;
 
 namespace Portal.Presentation.MVC.Assets
 {
@@ -27,14 +29,32 @@ namespace Portal.Presentation.MVC.Assets
         [HttpGet]
         public IActionResult CreateType()
         {
-            return View();
+            return View(new AssetTypeViewModel()
+            {
+                Properties = new List<string>()
+            });
         }
 
         [HttpPost]
         public IActionResult CreateType(AssetTypeViewModel model)
         {
+            if (!ModelState.IsValid)
+                return PartialView("_AssetTypeForm", model);
+
             var assetType = mapper.Map<CreateAssetTypeModel>(model);
-            assetTypeCommands.Create(assetType);
+            try
+            {
+                assetTypeCommands.Create(assetType);
+            }
+            catch (ApplicationException ex) when (ex.Type == ApplicationExceptionType.Validation)
+            {
+                model.Errors = ex.Errors;
+                return PartialView("_AssetTypeForm", model);
+            }
+            catch (ApplicationException)
+            {
+                // redirect to error view
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -46,7 +66,7 @@ namespace Portal.Presentation.MVC.Assets
             var model = mapper.Map<AssetTypeViewModel>(assetType);
             return View(model);
         }
-        
+
         [HttpPost]
         public IActionResult RemoveProperty(string assetTypeId, string property)
         {

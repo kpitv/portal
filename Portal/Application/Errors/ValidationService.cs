@@ -6,11 +6,11 @@ namespace Portal.Application.Errors
 {
     public class ValidationService : IValidationService
     {
-        public Dictionary<ValidationError, string> Errors { get; } = new Dictionary<ValidationError, string>();
+        public Dictionary<ValidationError, string> Errors { get; set; } = new Dictionary<ValidationError, string>();
 
         public void DomainErrorsHandler(object sender, ValidationEventArgs e)
         {
-            Errors.Add(e.Name, e.Property);
+            Errors.Add(e.Name, !string.IsNullOrWhiteSpace(e.Property) ? e.Property : e.InvalidValue.ToString());
         }
     }
 }

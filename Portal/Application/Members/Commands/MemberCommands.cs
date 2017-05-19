@@ -27,6 +27,9 @@ namespace Portal.Application.Members.Commands
 
             Member.ErrorOccurred += validation.DomainErrorsHandler;
             error.ErrorOccurred += error.ErrorsHandler;
+            Phone.ErrorOccured += validation.DomainErrorsHandler;
+            LangSet.ErrorOccured += validation.DomainErrorsHandler;
+            MemberName.ErrorOccured += validation.DomainErrorsHandler;
         }
 
         public void Create(MemberModel model)
@@ -65,9 +68,19 @@ namespace Portal.Application.Members.Commands
                 repository.Update(member);
                 repository.Save();
             }
-            catch (DomainException ex)
+            catch (ArgumentNullException)
             {
-                throw new ApplicationException(ex.Name);
+                throw new ApplicationException(nameof(ArgumentNullException));
+            }
+            catch (ArgumentException)
+            {
+                var domainErrors = validation.Errors.ToLookup(e => e.Value, e => e.Key.ToString());
+                var applicationErrors = error.Errors.ToLookup(e => e.Value, e => e.Key.ToString());
+
+                throw new ApplicationException(domainErrors
+                    .Concat(applicationErrors)
+                    .SelectMany(errors => errors.Select(value => new { errors.Key, value }))
+                    .ToLookup(e => e.Key, e => e.value));
             }
             catch (PersistanceException ex) when (ex.IsStorageException)
             {
@@ -75,7 +88,7 @@ namespace Portal.Application.Members.Commands
             }
             catch (PersistanceException ex)
             {
-                throw new ApplicationException(ex.EntityName);
+                throw new ApplicationException(ex.EntityName, ApplicationExceptionType.Storage);
             }
         }
 

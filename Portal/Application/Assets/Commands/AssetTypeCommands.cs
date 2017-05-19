@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Portal.Application.Assets.Commands.Models;
+using Portal.Application.Errors;
 using Portal.Application.Interfaces;
+using Portal.Application.Shared;
 using Portal.Domain.Assets;
 
 namespace Portal.Application.Assets.Commands
@@ -9,10 +11,17 @@ namespace Portal.Application.Assets.Commands
     public class AssetTypeCommands : IAssetTypeCommands
     {
         private readonly IRepository<AssetType> repository;
+        private readonly IValidationService validation;
+        private readonly ErrorService error;
 
-        public AssetTypeCommands(IRepository<AssetType> repository)
+        public AssetTypeCommands(IRepository<AssetType> repository, 
+            IValidationService validation, ErrorService error)
         {
             this.repository = repository;
+            this.validation = validation;
+            this.error = error;
+
+            AssetType.ErrorOccurred += validation.DomainErrorsHandler;
         }
 
         public void AddAsset(string assetTypeId, AssetModel model)
@@ -27,10 +36,31 @@ namespace Portal.Application.Assets.Commands
 
         public void Create(CreateAssetTypeModel model)
         {
-            repository.Create(new AssetType(
-                model.Name,
-                model.Properties));
-            repository.Save();
+            try
+            {
+                repository.Create(new AssetType(
+                        model.Name,
+                        model.Properties));
+                repository.Save();
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ApplicationException(nameof(ArgumentNullException));
+            }
+            catch (ArgumentException ex)
+            {
+                var domainErrors = validation.Errors.ToLookup(e => e.Value, e => e.Key.ToString());
+                var applicationErrors = error.Errors.ToLookup(e => e.Value, e => e.Key.ToString());
+
+                throw new ApplicationException(domainErrors
+                    .Concat(applicationErrors)
+                    .SelectMany(errors => errors.Select(value => new { errors.Key, value }))
+                    .ToLookup(e => e.Key, e => e.value));
+            }
+            catch (PersistanceException ex)
+            {
+                throw new ApplicationException(ex.EntityName, ApplicationExceptionType.Storage);
+            }
         }
 
         public void RemoveAsset(string assetTypeId, AssetModel model)

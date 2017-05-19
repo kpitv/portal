@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using Portal.Domain.Members.Exceptions.MemberName;
+﻿using System;
+using System.Text.RegularExpressions;
 using Portal.Domain.Shared;
+using static Portal.Domain.Shared.ValidationError;
 
 namespace Portal.Domain.Members
 {
@@ -32,17 +33,82 @@ namespace Portal.Domain.Members
 
         public MemberName(LangSet firstName, LangSet secondName, LangSet lastName)
         {
-            FirstName = Validate(firstName) ? firstName : throw new InvalidFirstNameException(nameof(InvalidFirstNameException));
-            SecondName = Validate(secondName) ? secondName : throw new InvalidSecondNameException(nameof(InvalidFirstNameException));
-            LastName = Validate(lastName) ? lastName : throw new InvalidLastNameException(nameof(InvalidFirstNameException));
+            if (firstName is null || secondName is null || lastName is null)
+                throw new ArgumentNullException();
+
+            if (Validate(firstName, nameof(FirstName)) &&
+                Validate(secondName, nameof(SecondName))
+                && Validate(lastName, nameof(LastName)))
+            {
+                FirstName = firstName;
+                LastName = lastName;
+                SecondName = secondName;
+            }
+            else
+                throw new ArgumentException();
         }
 
         #region Methods
-        public static bool Validate(LangSet name) =>
-           name != null &&
-           Regex.IsMatch(name.InEnglish, @"^[a-zA-Z\-']*$") &&
-           Regex.IsMatch(name.InRussian, @"^[а-яА-яЁё\-']*$") &&
-           Regex.IsMatch(name.InUkrainian, @"^[А-Ща-щЬЮЯьюяҐІЇЄґіїє\-']*$");
+
+        public bool Validate(LangSet name, string nameType)
+        {
+            var state = true;
+            if (!Regex.IsMatch(name.InEnglish, @"^[a-zA-Z\-']*$"))
+            {
+                switch (nameType)
+                {
+                    case nameof(FirstName):
+                        RaiseError(this, new ValidationEventArgs(InvalidFirstNameInEnglish, invalidValue: name.InEnglish));
+                        break;
+                    case nameof(SecondName):
+                        RaiseError(this, new ValidationEventArgs(InvalidSecondNameInEnglish, invalidValue: name.InEnglish));
+                        break;
+                    case nameof(LastName):
+                        RaiseError(this, new ValidationEventArgs(InvalidLastNameInEnglish, invalidValue: name.InEnglish));
+                        break;
+                }
+                state = false;
+            }
+            if (!Regex.IsMatch(name.InRussian, @"^[а-яА-яЁё\-']*$"))
+            {
+                switch (nameType)
+                {
+                    case nameof(FirstName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidFirstNameInRussian, invalidValue: name.InRussian));
+                        break;
+                    case nameof(SecondName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidSecondNameInRussian, invalidValue: name.InRussian));
+                        break;
+                    case nameof(LastName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidLastNameInRussian, invalidValue: name.InRussian));
+                        break;
+                }
+                state = false;
+            }
+            if (!Regex.IsMatch(name.InUkrainian, @"^[А-Ща-щЬЮЯьюяҐІЇЄґіїє\-']*$"))
+            {
+                switch (nameType)
+                {
+                    case nameof(FirstName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidFirstNameInUkrainian, invalidValue: name.InUkrainian));
+                        break;
+                    case nameof(SecondName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidSecondNameInUkrainian, invalidValue: name.InUkrainian));
+                        break;
+                    case nameof(LastName):
+                        RaiseError(this,
+                            new ValidationEventArgs(InvalidLastNameInUkrainian, invalidValue: name.InUkrainian));
+                        break;
+                }
+                state = false;
+            }
+            return state;
+        }
 
         public MemberName Update(LangSet firstName = null,
             LangSet secondName = null, LangSet lastName = null) =>

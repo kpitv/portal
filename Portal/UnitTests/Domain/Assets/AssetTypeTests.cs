@@ -52,7 +52,7 @@ namespace Portal.Tests.UnitTests.Domain.Assets
         [InlineData(null)]
         public void ValidateName_ShouldReturnFalse(string name)
         {
-            bool result = AssetType.ValidateName(name, 10);
+            bool result = assetType.ValidateName(name, 10);
 
             result.Should().BeFalse();
         }
@@ -60,7 +60,7 @@ namespace Portal.Tests.UnitTests.Domain.Assets
         [Fact]
         public void ValidateName_ShouldReturnTrue()
         {
-            bool result = AssetType.ValidateName("Dimasuk", 10);
+            bool result = assetType.ValidateName("Dimasuk", 10);
 
             result.Should().BeTrue();
         }

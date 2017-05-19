@@ -14,7 +14,7 @@ namespace Portal.Persistance.Shared
         #region Member
         public static Member ToMember(this MemberEntity memberEntity) =>
            Member.CreateWithId(
-                id: Guid.Parse(memberEntity.Id),
+                id: memberEntity.Id,
                 userId: memberEntity.UserId,
                 name: new MemberName(
                     firstName: new LangSet(memberEntity.FirstNameInEnglish, memberEntity.FirstNameInRussian, memberEntity.FirstNameInUkrainian),
@@ -23,7 +23,7 @@ namespace Portal.Persistance.Shared
                 email: memberEntity.Email,
                 phones: memberEntity.Phones.ToMappedCollection(ToPhone).ToList(),
                 roles: memberEntity.Roles.ToMappedCollection(ToRole).ToList(),
-                contactLinks: memberEntity.ContactLinks.ToMappedCollection(ToContactLink)
+                contactLinks: memberEntity.ContactLinks.Count == 0 ? null : memberEntity.ContactLinks?.ToMappedCollection(ToContactLink)
                     .Zip(memberEntity.ContactLinks.Select(c => c.Link), (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v),
                 about: memberEntity.About
                 );

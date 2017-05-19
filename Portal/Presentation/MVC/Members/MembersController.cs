@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -83,14 +84,13 @@ namespace Portal.Presentation.MVC.Members
         public IActionResult Create(MemberViewModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return PartialView("_MemberForm", model);
 
             var member = mapper.Map<MemberModel>(model);
             member.UserId = manager.User.GetUserId(HttpContext.User);
             member.Roles = model.Roles.Where(r => r.Value).Select(r => r.Key).ToList();
-            member.ContactLinks = model.ContactLinks.Where(c => c.Value != string.Empty)
+            member.ContactLinks = model.ContactLinks.Where(c => !string.IsNullOrWhiteSpace(c.Value))
                 .ToDictionary(c => c.Key, c => c.Value);
-
             try
             {
                 commands.Create(member);
@@ -98,25 +98,77 @@ namespace Portal.Presentation.MVC.Members
             catch (ApplicationException ex) when (ex.Type == ApplicationExceptionType.Validation)
             {
                 model.Errors = ex.Errors;
-                return View(model);
+                return PartialView("_MemberForm", model);
             }
             catch (ApplicationException)
             {
                 // redirect to error view
             }
-            return View(model); // redirect to profile
+            return RedirectToAction("Profile", new { username = manager.User.GetUserName(HttpContext.User) });
         }
 
         [HttpGet]
-        public IActionResult Edit(string username)
+        [Route("Members/Edit/{username}")]
+        public async Task<IActionResult> Edit(string username)
         {
-            return View();
+            var userId = (await manager.User.FindByNameAsync(username)).Id;
+            var member = queries.FindMembers(m => m.UserId == userId).FirstOrDefault();
+
+            if (member != null)
+            {
+                var memberModel = new MemberViewModel()
+                {
+                    About = member.About,
+                    ContactLinks = Enum.GetNames(typeof(ContactLink))
+                        .Select(c => (ContactLink)Enum.Parse(typeof(ContactLink), c))
+                        .ToDictionary(c => c.ToString(), c => member.ContactLinks.ContainsKey(c)
+                            ? member.ContactLinks[c]
+                            : string.Empty),
+                    Email = member.Email,
+                    FirstNameInEnglish = member.Name.FirstName.InEnglish,
+                    FirstNameInRussian = member.Name.FirstName.InRussian,
+                    FirstNameInUkrainian = member.Name.FirstName.InUkrainian,
+                    SecondNameInRussian = member.Name.SecondName.InRussian,
+                    SecondNameInUkrainian = member.Name.SecondName.InUkrainian,
+                    LastNameInEnglish = member.Name.LastName.InEnglish,
+                    LastNameInRussian = member.Name.LastName.InRussian,
+                    LastNameInUkrainian = member.Name.LastName.InUkrainian,
+                    Id = member.Id.ToString(),
+                    PhoneNumbers = member.Phones.Select(p => p.Number).ToList(),
+                    Roles = Enum.GetNames(typeof(Role)).ToDictionary(r => r, r => member.Roles.Contains((Role)Enum.Parse(typeof(Role), r))),
+                };
+                return View(memberModel);
+            }
+
+            return RedirectToAction("Profile");
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(MemberViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+                return PartialView("_MemberForm", model);
+
+            var member = mapper.Map<MemberModel>(model);
+            member.Id = model.Id;
+            member.UserId = manager.User.GetUserId(HttpContext.User);
+            member.Roles = model.Roles.Where(r => r.Value).Select(r => r.Key).ToList();
+            member.ContactLinks = model.ContactLinks.Where(c => !string.IsNullOrWhiteSpace(c.Value))
+                .ToDictionary(c => c.Key, c => c.Value);
+            try
+            {
+                commands.Update(member);
+            }
+            catch (ApplicationException ex) when (ex.Type == ApplicationExceptionType.Validation)
+            {
+                model.Errors = ex.Errors;
+                return PartialView("_MemberForm", model);
+            }
+            catch (ApplicationException)
+            {
+                // redirect to error view
+            }
+            return RedirectToAction("Profile", new { username = manager.User.GetUserName(HttpContext.User) });
         }
     }
 }

@@ -6,7 +6,9 @@
     <UserSecretsId>0e9c63a2-30ed-4059-89ab-1ed5b017d5f6</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="wwwroot\css\members\member.css" />
     <Content Include="wwwroot\css\site.css" />
+    <Content Include="wwwroot\js\assets\assettype.js" />
     <Content Include="wwwroot\js\members\member.js" />
     <Content Include="wwwroot\js\site.js" />
   </ItemGroup>

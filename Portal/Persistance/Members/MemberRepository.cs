@@ -5,6 +5,7 @@ using Portal.Domain.Members;
 using Portal.Persistance.Shared;
 using Portal.Application.Shared;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Portal.Persistance.Members
@@ -23,13 +24,14 @@ namespace Portal.Persistance.Members
         {
             try
             {
-                return databaseService.Members.Include(m => m.ContactLinks)
-                       .Include(m => m.Phones)
-                       .Include(m => m.Roles)
-                       .ToMappedCollection(EntityMapper.ToMember)
-                       .Where(m => predicate(m));
+                return databaseService.Members
+                    .Include(m => m.ContactLinks)
+                    .Include(m => m.Phones)
+                    .Include(m => m.Roles)
+                    .ToMappedCollection(EntityMapper.ToMember)
+                    .Where(m => predicate(m));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new PersistanceException(nameof(Find), nameof(Member));
             }
@@ -40,11 +42,11 @@ namespace Portal.Persistance.Members
             try
             {
                 return databaseService.Members
-                        .Include(m => m.ContactLinks)
-                        .Include(m => m.Phones)
-                        .Include(m => m.Roles)
-                        .Single(a => a.Id == id.ToString())
-                        .ToMember();
+                    .Include(m => m.ContactLinks)
+                    .Include(m => m.Phones)
+                    .Include(m => m.Roles)
+                    .Single(a => a.Id == id.ToString())
+                    .ToMember();
             }
             catch (Exception)
             {
@@ -56,10 +58,11 @@ namespace Portal.Persistance.Members
         {
             try
             {
-                return databaseService.Members.Include(m => m.ContactLinks)
-                       .Include(m => m.Phones)
-                       .Include(m => m.Roles)
-                       .ToMappedCollection(EntityMapper.ToMember);
+                return databaseService.Members
+                    .Include(m => m.ContactLinks)
+                    .Include(m => m.Phones)
+                    .Include(m => m.Roles)
+                    .ToMappedCollection(EntityMapper.ToMember);
             }
             catch (Exception)
             {

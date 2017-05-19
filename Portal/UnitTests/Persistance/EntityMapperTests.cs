@@ -18,7 +18,7 @@ namespace Portal.Tests.UnitTests.Persistance
             var id = Guid.NewGuid();
 
             var member = Member.CreateWithId(
-               id: id,
+               id: id.ToString(),
                userId: "ss",
                name: new MemberName(
                    new LangSet("Larochka", "Ларочка", "Ларочка"),
@@ -62,7 +62,7 @@ namespace Portal.Tests.UnitTests.Persistance
             var id = Guid.NewGuid();
 
             var member = Member.CreateWithId(
-               id: id,
+               id: id.ToString(),
                userId: "ss",
                name: new MemberName(
                    new LangSet("Larochka", "Ларочка", "Ларочка"),

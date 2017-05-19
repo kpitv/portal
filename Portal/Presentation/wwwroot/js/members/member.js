@@ -1,12 +1,54 @@
 ﻿$(document).ready(function () {
-    $("form").on("submit", function () {
-        //$(this).validate();
-        createMember();
-    });
+    initEvents();
 });
 
-function createMember() {
+function initEvents() {
+    $(".remove-number-input-button").click(removeInput);
+    $("#addNumberInputButton").click(addInput);
 
+    function addInput() {
+        var inputHtml = '<div><div class="form-group phone-number"><input type="tel" name="PhoneNumber" class="form-control" /><div class="btn glyphicon glyphicon-minus remove-number-input-button"></div><span class="text-danger"></span></div></div>';
+        $(this).before(inputHtml);
+        $(".remove-number-input-button:last").click(removeInput);
+    }
+
+    function removeInput() {
+        if ($(".remove-number-input-button").length !== 1) {
+            $(".remove-number-input-button").remove();
+            $(this).parent().remove();
+        }
+    }
+}
+
+function createMember() {
+    var member = collectMember();
+
+    $.ajax({
+        url: "/Members/Create",
+        method: "POST",
+        data: member,
+        success: function (data) {
+            $("#formContainer").html(data);
+            initEvents();
+        }
+    });
+}
+
+function updateMember() {
+    var member = collectMember();
+
+    $.ajax({
+        url: "/Members/Edit",
+        method: "POST",
+        data: member,
+        success: function (data) {
+            $("#formContainer").html(data);
+            initEvents();
+        }
+    });
+}
+
+function collectMember() {
     var phoneNumbers = [];
     $("#phoneNumbers input").each(function () {
         phoneNumbers.push($(this).val());
@@ -16,11 +58,10 @@ function createMember() {
         roles.push({
             key: $(this).attr("data-role"),
             value: $(this).prop("checked")
-    });
+        });
     });
     var contactLinks = [];
     $("#contactLinks input")
-        .filter(function () { return $(this).val() !== ""; })
         .each(function () {
             contactLinks.push({
                 key: $(this).attr("name"),
@@ -41,16 +82,8 @@ function createMember() {
         phoneNumbers: phoneNumbers,
         roles: roles,
         contactLinks: contactLinks,
-        about: $("#About").val()
+        about: $("#About").val(),
+        id: $("#Id").val()
     };
-
-    $.ajax({
-        url: "/Members/Create",
-        method: "POST",
-        data: member,
-        success: function (data) {
-            $("#formContainer").load(data);
-            alert("TAK!");
-        }
-    });
+    return member;
 }

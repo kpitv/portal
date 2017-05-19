@@ -1,0 +1,118 @@
+﻿@using Portal.Presentation.MVC.Members
+@model Portal.Presentation.MVC.Members.ViewModels.MemberViewModel
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6">
+        <h3 class="h3">@L["Enter your full name"]</h3>
+        <h4 class="h4">@L["Russian"]: </h4>
+        <div class="form-group">
+            <label asp-for="FirstNameInRussian">@L["First name"]: </label>
+            <input asp-for="FirstNameInRussian" class="form-control" />
+            <span asp-validation-for="FirstNameInRussian" server-validation-for="FirstNameInRussian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SecondNameInRussian">@L["Second name"]: </label>
+            <input asp-for="SecondNameInRussian" class="form-control" />
+            <span asp-validation-for="SecondNameInRussian" server-validation-for="SecondNameInRussian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastNameInRussian">@L["Last name"]: </label>
+            <input asp-for="LastNameInRussian" class="form-control" />
+            <span asp-validation-for="LastNameInRussian" server-validation-for="LastNameInRussian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <h4 class="h4">@L["Ukrainian"]: </h4>
+        <div class="form-group">
+            <label asp-for="FirstNameInUkrainian">@L["First name"]: </label>
+            <input asp-for="FirstNameInUkrainian" class="form-control" />
+            <span asp-validation-for="FirstNameInUkrainian" server-validation-for="FirstNameInUkrainian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SecondNameInUkrainian">@L["Second name"]: </label>
+            <input asp-for="SecondNameInUkrainian" class="form-control" />
+            <span asp-validation-for="SecondNameInUkrainian" server-validation-for="SecondNameInUkrainian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastNameInUkrainian">@L["Last name"]: </label>
+            <input asp-for="LastNameInUkrainian" class="form-control" />
+            <span asp-validation-for="LastNameInUkrainian" server-validation-for="LastNameInUkrainian" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <h4 class="h4">@L["English"]: </h4>
+        <div class="form-group">
+            <label asp-for="FirstNameInEnglish">@L["First name in English"]: </label>
+            <input asp-for="FirstNameInEnglish" class="form-control" />
+            <span asp-validation-for="FirstNameInEnglish" server-validation-for="FirstNameInEnglish" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastNameInEnglish">@L["Lastname in English"]: </label>
+            <input asp-for="LastNameInEnglish" class="form-control" />
+            <span asp-validation-for="LastNameInEnglish" server-validation-for="LastNameInEnglish" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3 class="h3">@L["Information"]</h3>
+        <div class="form-group">
+            <label asp-for="Email">@L["Your email"]: </label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" server-validation-for="Email" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div id="phoneNumbers" class="form-group">
+            <label>@L["Phone numbers"]: </label>
+            @if (Model.PhoneNumbers.Count == 0)
+            {
+                <div>
+                    <div class="form-group phone-number">
+                        <input type="tel" name="PhoneNumber" class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                foreach (string number in Model.PhoneNumbers)
+                {
+                    <div>
+                        <div class="form-group phone-number">
+                            <input type="tel" name="PhoneNumber" class="form-control" value="@number" />
+                            <div class="btn glyphicon glyphicon-minus remove-number-input-button"></div>
+                            <span server-validation-for="@number" server-validation-errors="@Model.Errors" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
+            }
+            <div id="addNumberInputButton" class="btn glyphicon glyphicon-plus"></div>
+            <span server-validation-for="Phones" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div id="roles" class="form-group">
+            <label>@L["Your role"]: </label>
+            @foreach (var role in Model.Roles)
+            {
+                string check = role.Value ? "checked" : string.Empty;
+                <div>
+                    <input type="checkbox" data-role="@role.Key" class="checkbox-inline" @check />
+                    <label>@role.Key</label>
+                </div>
+            }
+            <span server-validation-for="Roles" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+
+        <div id="contactLinks" class="form-group">
+            <label>@L["Other contacts"]:</label>
+            @foreach (var link in Model.ContactLinks)
+            {
+                <div class="form-group">
+                    <label>@link.Key</label>
+                    <input type="url" name="@link.Key" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+            }
+            <span server-validation-for="ContactLinks" server-validation-errors="@Model.Errors" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="About"></label>
+            <textarea asp-for="About" class="form-control"></textarea>
+            <span server-validation-for="About" server-validation-errors="@Model.Errors" asp-validation-for="About" class="text-danger"></span>
+        </div>
+        <input asp-for="Id" class="form-control" />
+    </div>
+</form>

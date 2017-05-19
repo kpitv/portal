@@ -16,13 +16,25 @@
 
     <div>
         <div>@L["Email"]: <span>@Model.Member.Email</span></div>
-        <div>@L["Phone"]: <span>@Model.Member.Phones[0].NumberWithBracesAndDashes (@Model.Member.Phones[0].Operator)</span></div>
-        <div>@L["Role"]: <span>@Model.Member.Roles[0]</span></div>
         <div>
-            Links:
+            @L["Phones"]:
+            @foreach (var phone in Model.Member.Phones)
+            {
+                <div>@phone.NumberWithBracesAndDashes (@phone.Operator)</div>
+            }
+        </div>
+        <div>
+            @L["Roles"]:
+            @foreach (var role in Model.Member.Roles)
+            {
+                <span>@role</span>
+            }
+        </div>
+        <div>
+            @L[" Links"]:
             @foreach (var contact in Model.Member.ContactLinks)
             {
-                <a href="http://@contact.Value">@contact.Key</a>
+                <a href="@contact.Value">@contact.Key</a>
             }
         </div>
     </div>

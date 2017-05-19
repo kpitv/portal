@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using Portal.Domain.Members.Exceptions.LangSet;
+﻿using System;
+using System.Linq;
 using Portal.Domain.Shared;
+using static Portal.Domain.Shared.ValidationError;
 
 namespace Portal.Domain.Members
 {
@@ -14,17 +15,34 @@ namespace Portal.Domain.Members
 
         public LangSet(string inEnglish, string inRussian, string inUkrainian)
         {
+            var state = true;
+
             if (CanBeEnglish(inEnglish))
                 InEnglish = inEnglish;
-            else throw new TextNotEnglishException(nameof(TextNotEnglishException));
+            else
+            {
+                RaiseError(this, new ValidationEventArgs(TextNotEnglish, invalidValue: inEnglish));
+                state = false;
+            }
 
             if (CanBeRussian(inRussian))
                 InRussian = inRussian;
-            else throw new TextNotRussianException(nameof(TextNotRussianException));
+            else
+            {
+                RaiseError(this, new ValidationEventArgs(TextNotRussian, invalidValue: inRussian));
+                state = false;
+            }
 
             if (CanBeUkrainian(inUkrainian))
                 InUkrainian = inUkrainian;
-            else throw new TextNotUkrainianException(nameof(TextNotUkrainianException));
+            else
+            {
+                RaiseError(this, new ValidationEventArgs(TextNotUkrainian, invalidValue: inUkrainian));
+                state = false;
+            }
+
+            if (!state)
+                throw new ArgumentException();
         }
 
         #region Methods

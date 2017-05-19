@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Portal.Domain.Assets.Exceptions;
+using static Portal.Domain.Shared.ValidationError;
 
 namespace Portal.Domain.Assets
 {
@@ -12,6 +13,7 @@ namespace Portal.Domain.Assets
         public event EventHandler<AssetTypeEventArgs> PropertyMoved;
         public event EventHandler<AssetTypeEventArgs> PropertyAdded;
         public event EventHandler<AssetTypeEventArgs> PropertyRemoved;
+        public static event EventHandler<ValidationEventArgs> ErrorOccurred;
         #endregion
 
         #region Properties
@@ -23,10 +25,21 @@ namespace Portal.Domain.Assets
         #region Ctors
         public AssetType(string name, List<string> properties)
         {
-            Name = ValidateName(name, 50) ?
-                name : throw new InvalidAssetTypeNameException(nameof(InvalidAssetTypeNameException));
-            Properties = ValidateProperties(properties) ?
-                properties : throw new InvalidPropertiesException(nameof(InvalidPropertiesException));
+            bool state = true;
+            if (name is null || properties is null)
+                throw new ArgumentNullException();
+            if (properties.Any(p => p is null))
+                throw new ArgumentNullException();
+            if (!ValidateName(name, 50))
+                state = false;
+            if (!ValidateProperties(properties))
+                state = false;
+
+            if (!state)
+                throw new ArgumentException();
+
+            Name = name;
+            Properties = properties;
         }
         #endregion
 
@@ -55,15 +68,39 @@ namespace Portal.Domain.Assets
             Assets = newAssets;
         }
 
-        public static bool ValidateName(string name, int maxLength) =>
-            !string.IsNullOrWhiteSpace(name) &&
-            name.Length <= maxLength;
+        public bool ValidateName(string name, int maxLength)
+        {
+            bool state = true;
+            if (string.IsNullOrWhiteSpace(name) || name.Length > maxLength)
+            {
+                ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidAssetTypeName, nameof(Name)));
+                state = false;
+            }
+            return state;
+        }
 
-        public static bool ValidateProperties(List<string> properties) =>
-            properties != null &&
-            properties.Count > 0 &&
-            properties.Distinct().Count() == properties.Count &&
-            properties.TrueForAll(a => ValidateName(a, 50));
+        public bool ValidateProperties(List<string> properties)
+        {
+            bool state = true;
+            if (properties != null &&
+                !properties.Any(p => p is null) &&
+                properties.Count > 0 &&
+                properties.Distinct().Count() == properties.Count)
+            {
+                foreach (var property in properties)
+                    if (string.IsNullOrWhiteSpace(property) || property.Length > 50)
+                    {
+                        ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidAssetTypeProperty, invalidValue: property));
+                        return false;
+                    }
+            }
+            else
+            {
+                ErrorOccurred?.Invoke(this, new ValidationEventArgs(InvalidAssetTypePropertiesList, nameof(Properties)));
+                state = false;
+            }
+            return state;
+        }
 
         public void UpdateName(string newName)
         {

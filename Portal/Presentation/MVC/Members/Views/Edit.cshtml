@@ -1,99 +1,19 @@
-﻿@*@using Portal.Presentation.MVC.Members
-@model Portal.Presentation.MVC.Members.ViewModels.MemberViewModel
+﻿@model Portal.Presentation.MVC.Members.ViewModels.MemberViewModel
 
-<form asp-action="Edit" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="col-md-6">
-        <h3 class="h3">@L["Your full name"]</h3>
-        <h4 class="h4">@L["Russian"]: </h4>
-        <div class="form-group">
-            <label asp-for="FirstNameInRussian">@L["First name"]: </label>
-            <input asp-for="FirstNameInRussian" class="form-control" />
-            <span asp-validation-for="FirstNameInRussian" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="SecondNameInRussian">@L["Second name"]: </label>
-            <input asp-for="SecondNameInRussian" class="form-control" />
-            <span asp-validation-for="SecondNameInRussian" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastNameInRussian">@L["Last name"]: </label>
-            <input asp-for="LastNameInRussian" class="form-control" />
-            <span asp-validation-for="LastNameInRussian" class="text-danger"></span>
-        </div>
-        <h4 class="h4">@L["Ukrainian"]: </h4>
-        <div class="form-group">
-            <label asp-for="FirstNameInUkrainian">@L["First name"]: </label>
-            <input asp-for="FirstNameInUkrainian" class="form-control" />
-            <span asp-validation-for="FirstNameInUkrainian" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="SecondNameInUkrainian">@L["Second name"]: </label>
-            <input asp-for="SecondNameInUkrainian" class="form-control" />
-            <span asp-validation-for="SecondNameInUkrainian" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastNameInUkrainian">@L["Last name"]: </label>
-            <input asp-for="LastNameInUkrainian" class="form-control" />
-            <span asp-validation-for="LastNameInUkrainian" class="text-danger"></span>
-        </div>
-        <h4 class="h4">@L["English"]: </h4>
-        <div class="form-group">
-            <label asp-for="FirstNameInEnglish">@L["First name in English"]: </label>
-            <input asp-for="FirstNameInEnglish" class="form-control" />
-            <span asp-validation-for="FirstNameInEnglish" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="LastNameInEnglish">@L["Lastname in English"]: </label>
-            <input asp-for="LastNameInEnglish" class="form-control" />
-            <span asp-validation-for="LastNameInEnglish" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <h3 class="h3">@L["Information"]</h3>
-        <div class="form-group">
-            <label asp-for="Email">@L["Your email"]: </label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="PhoneNumber">@L["Phone number"]: </label>
-            <input asp-for="PhoneNumber" class="form-control" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
-        <h4 class="h4">@L["Your role"]:</h4>
-        @foreach (string role in Model.Roles)
-        {
-            <div class="form-group col-md-4">
-                <input asp-for="SelectedRole" class="radio-inline" type="radio" value="@role" /> @role
-            </div>
-        }
-        <h4 class="h4">@L["Other contacts"]:</h4>
-        @foreach (var link in Model.ContactLinks)
-        {
-            if (link.Key == "Twitter")
-            {
-                break;
-            }
-            <div class="form-group">
-                <label>@link.Key</label>
-                <input name="@link.Key" class="form-control" />
-                <span asp-validation-for="@link.Key" class="text-danger"></span>
-            </div>
-        }
-        <div class="form-group">
-            <label asp-for="About"></label>
-            <textarea asp-for="About" class="form-control"></textarea>
-            <span asp-validation-for="About" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <input asp-for="Id" />
-    </div>
-    <div class="form-group">
-        <input asp-for="Username" />
-    </div>
-    <div class="form-group col-md-2 button-submit">
-        <button class="btn btn-primary" type="submit">@L["Ok"]</button>
-    </div>
-</form>*@
+@section styles
+{
+    <link rel="stylesheet" href="~/css/members/member.css" />
+}
+
+<div id="formContainer">
+    @Html.Partial("_MemberForm")
+</div>
+<div>
+    <div class="btn btn-primary" id="submitMemberForm" onclick="updateMember()">@L["Ok"]</div>
+</div>
+
+@section scripts
+{
+    <script src="/js/members/member.js"></script>
+}
+

@@ -4,6 +4,9 @@
 @foreach (var assetType in Model)
 {
     <div>
+        <a asp-action="CreateType"></a>
+    </div>
+    <div>
         <a href="/Assets/@assetType.Name">@assetType.Name</a>
         <a href="/Assets/EditType/@assetType.Name">Edit</a>
     </div>

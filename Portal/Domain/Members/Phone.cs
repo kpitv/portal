@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Portal.Domain.Members.Exceptions.Phone;
 using Portal.Domain.Shared;
+using static Portal.Domain.Shared.ValidationError;
 
 namespace Portal.Domain.Members
 {
@@ -47,14 +48,18 @@ namespace Portal.Domain.Members
 
         public Phone(string number)
         {
-            if (number is null) throw new NullReferenceException();
+            if (number is null) throw new ArgumentNullException();
 
             if (Regex.IsMatch(number, @"^\+380\d{9}$"))
             {
                 OperatorCode = number.Substring(4, 2);
                 Number = number;
             }
-            else throw new InvalidPhoneException(nameof(InvalidPhoneException));
+            else
+            {
+                RaiseError(this, new ValidationEventArgs(InvalidPhoneNumber, invalidValue: number));
+                throw new ArgumentException();
+            }
         }
 
         #region Methods

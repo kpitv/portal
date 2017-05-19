@@ -1,20 +1,19 @@
 ﻿@model Portal.Presentation.MVC.Assets.ViewModels.AssetTypeViewModel
 
+@section styles
+{
+    <link rel="stylesheet" href="~/css/members/member.css" />
+}
+
+<h1>Create Asset Type</h1>
 <div id="createAssetTypeForm">
-    <h1>Create Asset Type</h1>
-    <form method="post" asp-antiforgery="true">
-        <div id="assetTypeName" class="form-group">
-            <label asp-for="Name">Name: </label>
-            <input asp-for="Name" class="form-control" />
-        </div>
-        <div id="assetTypeProperties" class="form-group">
-            <label>Properties: </label>
-            <div class="form-group">
-                <input class="form-control" />
-                <button type="button" class="btn btn-default removeProperty glyphicon glyphicon-remove"></button>
-            </div>
-        </div>
-        <button type="button" id="addPropertyButton" class="btn btn-default">Add Property</button>
-        <button type="button" id="saveAssetType" class="btn btn-default">Save</button>
-    </form>
+    @Html.Partial("_AssetTypeForm")
 </div>
+<div>
+    <div class="btn btn-primary" id="createAssetType">@L["Ok"]</div>
+</div>
+
+@section scripts
+{
+    <script src="/js/assets/assettype.js"></script>
+}

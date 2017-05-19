@@ -10,6 +10,7 @@ namespace Portal.Presentation.Infrastructure
             return new[]
             {
                 "~/MVC/{1}/Views/{0}.cshtml",
+                "~/MVC/{1}/Views/Shared/{0}.cshtml",
                 "~/MVC/Shared/Views/{0}.cshtml",
                 "~/MVC/Shared/Views/Components/{0}.cshtml"
             };
